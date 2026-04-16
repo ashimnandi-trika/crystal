@@ -117,15 +117,26 @@ const Hero = () => (
         Clean code that ships.
       </p>
 
-      {/* Line 3: The descriptor — readable, not tiny */}
-      <p
+      {/* Line 3: The descriptor — designed, not just typed */}
+      <div
         data-testid="hero-subtitle"
-        className="animate-fade-up delay-300 mt-6 text-[clamp(1rem,2vw,1.35rem)] text-neutral-400 max-w-2xl mx-auto leading-relaxed"
+        className="animate-fade-up delay-300 mt-8"
       >
-        Your AI coding buddy that protects{" "}
-        <span className="text-blue-400 font-medium">architecture integrity</span> and{" "}
-        <span className="text-blue-400 font-medium">domain purity</span>.
-      </p>
+        <p className="text-[clamp(0.95rem,1.8vw,1.15rem)] text-neutral-500 tracking-wide mb-4">
+          Your AI coding buddy that protects
+        </p>
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/[0.06] px-5 py-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <span className="text-[clamp(0.85rem,1.6vw,1.05rem)] font-medium text-blue-300 tracking-wide">architecture integrity</span>
+          </span>
+          <span className="text-neutral-600 text-[15px]">&</span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/[0.06] px-5 py-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <span className="text-[clamp(0.85rem,1.6vw,1.05rem)] font-medium text-blue-300 tracking-wide">domain purity</span>
+          </span>
+        </div>
+      </div>
 
       {/* CTAs */}
       <div className="animate-fade-up delay-400 mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
