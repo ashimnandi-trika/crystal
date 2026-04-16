@@ -117,26 +117,13 @@ const Hero = () => (
         Clean code that ships.
       </p>
 
-      {/* Line 3: The descriptor — designed, not just typed */}
-      <div
+      {/* Line 3: One clean line — proportionate, grey, understated */}
+      <p
         data-testid="hero-subtitle"
-        className="animate-fade-up delay-300 mt-8"
+        className="animate-fade-up delay-300 mt-7 text-[clamp(1.1rem,2.2vw,1.5rem)] text-neutral-500 font-normal tracking-tight leading-snug"
       >
-        <p className="text-[clamp(0.95rem,1.8vw,1.15rem)] text-neutral-500 tracking-wide mb-4">
-          Your AI coding buddy that protects
-        </p>
-        <div className="flex items-center justify-center gap-3 flex-wrap">
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/[0.06] px-5 py-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-            <span className="text-[clamp(0.85rem,1.6vw,1.05rem)] font-medium text-blue-300 tracking-wide">architecture integrity</span>
-          </span>
-          <span className="text-neutral-600 text-[15px]">&</span>
-          <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/[0.06] px-5 py-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-            <span className="text-[clamp(0.85rem,1.6vw,1.05rem)] font-medium text-blue-300 tracking-wide">domain purity</span>
-          </span>
-        </div>
-      </div>
+        Architecture integrity. Domain purity. Your AI coding buddy.
+      </p>
 
       {/* CTAs */}
       <div className="animate-fade-up delay-400 mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
