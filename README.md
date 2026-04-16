@@ -11,7 +11,9 @@ from first commit to production.
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
-[Website](https://crystalcodes.dev) · [Getting Started](#getting-started) · [Commands](#commands) · [Contributing](#contributing)
+[Website](https://build-integrity.emergent.host) · [Case Study](project-crystal/crystal-guard/examples/case-study/CASE-STUDY.md) · [Getting Started](#getting-started) · [Commands](#commands) · [Contributing](#contributing)
+
+> **Live now at [build-integrity.emergent.host](https://build-integrity.emergent.host)** — custom domain (crystalcodes.dev) coming soon.
 
 </div>
 
@@ -330,6 +332,25 @@ We welcome contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
+## Case Study: From F to A
+
+We built a real todo app with AI across 4 sessions. Crystal scanned it and found **29 issues including 5 critical** — hardcoded API keys, database code in React, exposed .env file, zero tests.
+
+After fixing with Crystal's paste-ready prompts: **A (100/100). All 15 gates passing.**
+
+| Before Crystal | After Crystal |
+|---------------|--------------|
+| F (0/100) | A (100/100) |
+| 5 critical security issues | 0 |
+| API keys hardcoded in 2 files | All in .env |
+| MongoDB import in React component | Clean separation |
+| No .gitignore (secrets committed) | Protected |
+| 5/15 gates passing | 15/15 |
+
+**[Read the full case study with real terminal output](project-crystal/crystal-guard/examples/case-study/CASE-STUDY.md)** — every number is from a real Crystal scan on actual project files you can clone and test yourself.
+
+---
+
 ## License
 
 MIT — free forever. See [LICENSE](LICENSE).
@@ -338,9 +359,10 @@ MIT — free forever. See [LICENSE](LICENSE).
 
 ## Links
 
-- **Website**: [crystalcodes.dev](https://crystalcodes.dev)
+- **Website**: [build-integrity.emergent.host](https://build-integrity.emergent.host) (crystalcodes.dev coming soon)
 - **PyPI**: [pypi.org/project/crystal-code](https://pypi.org/project/crystal-code/)
 - **Issues**: [github.com/ashimnandi-trika/crystal/issues](https://github.com/ashimnandi-trika/crystal/issues)
+- **Case Study**: [Full walkthrough with real output](project-crystal/crystal-guard/examples/case-study/CASE-STUDY.md)
 
 ---
 
