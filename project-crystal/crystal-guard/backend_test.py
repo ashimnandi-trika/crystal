@@ -204,16 +204,72 @@ class CrystalGuardTester:
         )[0]
 
     def test_crystal_help(self):
-        """Test crystal help command"""
+        """Test crystal help command - should show Crystal branding and all 8 commands"""
         def check_help_output(stdout, stderr):
-            return ("crystal" in stdout.lower() and 
-                    ("init" in stdout or "check" in stdout or "handoff" in stdout))
+            # Check for Crystal branding (not Crystal Guard)
+            has_crystal_branding = "Crystal" in stdout and "Crystal Guard" not in stdout
+            # Check for all 8 commands: init, check, status, handoff, gates, report, architect, mcp
+            commands = ["init", "check", "status", "handoff", "gates", "report", "architect", "mcp"]
+            has_all_commands = all(cmd in stdout for cmd in commands)
+            return has_crystal_branding and has_all_commands
         
         return self.run_test(
-            "crystal --help",
+            "crystal --help (checking Crystal branding and 8 commands)",
             ["crystal", "--help"],
             expected_exit_code=0,
             check_output=check_help_output
+        )[0]
+
+    def test_crystal_architect(self):
+        """Test crystal architect command - should generate architecture.md"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+            arch_file = f.name
+        
+        try:
+            def check_architect_output(stdout, stderr):
+                return "Generated:" in stdout and "architecture.md" in stdout
+            
+            success = self.run_test(
+                "crystal architect tests/fixtures/good_project",
+                ["crystal", "architect", "tests/fixtures/good_project", "--output", arch_file],
+                expected_exit_code=0,
+                check_output=check_architect_output
+            )[0]
+            
+            # Check if architecture file was created and has expected content
+            if os.path.exists(arch_file):
+                with open(arch_file, 'r') as f:
+                    content = f.read()
+                # Check for required sections: rules, stack info, session instructions
+                required_sections = ["Architecture Rules", "Tech Stack", "Session Instructions"]
+                has_required_content = all(section in content for section in required_sections)
+                if has_required_content and len(content) > 500:
+                    print("✅ Architecture.md created with valid content (rules, stack info, session instructions)")
+                    return success
+                else:
+                    print("❌ Architecture.md created but missing required sections")
+                    print(f"Content preview: {content[:200]}...")
+                    return False
+            else:
+                print("❌ Architecture.md file was not created")
+                return False
+                
+        finally:
+            if os.path.exists(arch_file):
+                os.unlink(arch_file)
+
+    def test_crystal_mcp_serve_help(self):
+        """Test crystal mcp serve --help command - should show MCP server options"""
+        def check_mcp_help_output(stdout, stderr):
+            # Should show transport and port options
+            return ("transport" in stdout and "port" in stdout and 
+                    ("stdio" in stdout or "http" in stdout))
+        
+        return self.run_test(
+            "crystal mcp serve --help (checking transport and port options)",
+            ["crystal", "mcp", "serve", "--help"],
+            expected_exit_code=0,
+            check_output=check_mcp_help_output
         )[0]
 
 def main():
@@ -242,6 +298,8 @@ def main():
     # Run all tests
     tests = [
         tester.test_crystal_help,
+        tester.test_crystal_architect,
+        tester.test_crystal_mcp_serve_help,
         tester.test_crystal_init_good_project,
         tester.test_crystal_check_good_project,
         tester.test_crystal_check_bad_project,

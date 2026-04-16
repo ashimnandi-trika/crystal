@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import { Server, Terminal, ShieldCheck, FolderTree, Layers, Lock, Package, BookOpen, GitBranch, ArrowRight, Check, Copy, ExternalLink, ChevronDown, BarChart3, FileText, RefreshCw, Zap } from "lucide-react";
+import { Server, Terminal, ShieldCheck, FolderTree, Layers, GitBranch, ArrowRight, Check, Copy, ExternalLink, ChevronDown, BarChart3, FileText, RefreshCw, Zap } from "lucide-react";
 
 const HERO_BG = "https://static.prod-images.emergentagent.com/jobs/3778f3fa-dbe3-475d-870a-0b138480ff3d/images/5562c81e28f7695995a13ea769adea0593fe6447e0c319030cb8381c3bf4fc80.png";
 
@@ -45,11 +45,14 @@ const Nav = () => {
           <div className="w-7 h-7 rounded-md bg-white/10 border border-white/20 flex items-center justify-center">
             <ShieldCheck size={14} className="text-blue-400" />
           </div>
-          <span className="font-mono text-sm font-semibold tracking-tight text-white">Crystal Guard</span>
+          <span className="font-mono text-sm font-semibold tracking-tight text-white">Crystal</span>
         </a>
         <div className="flex items-center gap-6">
           <a href="#quick-start" data-testid="nav-docs-link" className="hidden md:inline text-sm text-neutral-400 hover:text-white transition-colors">
-            Quick Start
+            Get Started
+          </a>
+          <a href="#features" data-testid="nav-features-link" className="hidden md:inline text-sm text-neutral-400 hover:text-white transition-colors">
+            Features
           </a>
           <a href="#commands" data-testid="nav-commands-link" className="hidden md:inline text-sm text-neutral-400 hover:text-white transition-colors">
             Commands
@@ -87,7 +90,7 @@ const Hero = () => (
       <div className="animate-fade-in-up">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-          <span className="text-xs font-mono text-neutral-400 tracking-wide">Open Source Architecture Guardian</span>
+          <span className="text-xs font-mono text-neutral-400 tracking-wide">Open Source &middot; Works with any AI coding tool</span>
         </div>
       </div>
       <h1
@@ -95,19 +98,25 @@ const Hero = () => (
         className="text-5xl md:text-7xl lg:text-8xl tracking-tighter font-semibold text-white leading-[0.95] animate-fade-in-up animation-delay-100"
         style={{ opacity: 0, animationFillMode: "forwards" }}
       >
-        The Architecture<br />
-        Guardian for<br />
-        <span className="text-blue-400">Vibe-Coded</span> Projects
+        Crystal
       </h1>
       <p
-        data-testid="hero-subtitle"
-        className="mt-8 text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200"
+        data-testid="hero-tagline"
+        className="mt-6 text-2xl md:text-3xl tracking-tight font-medium text-neutral-300 animate-fade-in-up animation-delay-200"
         style={{ opacity: 0, animationFillMode: "forwards" }}
       >
-        MCP servers + CLI + CI/CD gates that keep AI-generated code structurally sound, secure, and maintainable.
+        Your AI coding buddy that protects<br className="hidden md:block" />{" "}
+        <span className="text-blue-400">architecture integrity</span> and <span className="text-blue-400">domain purity</span>
+      </p>
+      <p
+        data-testid="hero-subtitle"
+        className="mt-5 text-lg text-neutral-500 max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-300"
+        style={{ opacity: 0, animationFillMode: "forwards" }}
+      >
+        So your project ships clean. Every time.
       </p>
       <div
-        className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up animation-delay-300"
+        className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up animation-delay-400"
         style={{ opacity: 0, animationFillMode: "forwards" }}
       >
         <a
@@ -137,14 +146,14 @@ const Hero = () => (
         <TerminalBlock
           lines={[
             { type: "command", text: "pip install crystal-guard" },
-            { type: "output", text: "Successfully installed crystal-guard-0.1.0" },
+            { type: "output", text: "Installed crystal-guard-0.1.0" },
             { type: "command", text: "crystal init" },
-            { type: "success", text: "Detected stack: React + Python + MongoDB" },
-            { type: "success", text: "Loaded 15 quality gates" },
+            { type: "success", text: "Found: React + Python + MongoDB" },
+            { type: "success", text: "15 quality checks loaded" },
             { type: "command", text: "crystal check" },
-            { type: "success", text: "15/15 gates passed | Health: A (100/100)" },
-            { type: "command", text: "crystal handoff --output handoff.md" },
-            { type: "success", text: "Session handoff generated. Paste into next AI session." },
+            { type: "success", text: "15/15 checks passed | Health: A (100/100)" },
+            { type: "command", text: "crystal handoff" },
+            { type: "success", text: "Handoff ready. Paste into your next AI session." },
           ]}
         />
       </div>
@@ -216,10 +225,10 @@ const TerminalBlock = ({ lines, showCopy = false, copyText = "" }) => {
 
 /* ─── Problem Stats ─── */
 const stats = [
-  { value: "36%", label: "of vibe coders skip QA entirely", source: "arxiv, 2025" },
-  { value: "1.7x", label: "more logic errors in AI-generated code", source: "GitHub Study, 2025" },
-  { value: "45%", label: "of AI code contains security vulnerabilities", source: "daily.dev, 2025" },
-  { value: "63%", label: "spend more time debugging than writing", source: "Developer Survey, 2025" },
+  { value: "36%", label: "of people using AI to code never test it", source: "arxiv, 2025" },
+  { value: "1.7x", label: "more bugs in AI-written code vs human code", source: "GitHub Study, 2025" },
+  { value: "45%", label: "of AI code has security holes", source: "daily.dev, 2025" },
+  { value: "63%", label: "spend more time fixing AI code than writing it themselves", source: "Dev Survey, 2025" },
 ];
 
 const ProblemSection = () => (
@@ -228,11 +237,11 @@ const ProblemSection = () => (
       <AnimatedSection>
         <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">The Problem</p>
         <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white max-w-3xl">
-          Vibe coding is fast.<br />
-          <span className="text-neutral-500">Until it breaks.</span>
+          AI builds fast.<br />
+          <span className="text-neutral-500">Then things break.</span>
         </h2>
         <p className="mt-6 text-neutral-400 text-lg max-w-2xl leading-relaxed">
-          AI builds apps in minutes. But without guardrails, your codebase becomes a house of cards — it looks complete but collapses under real-world pressure.
+          You tell AI to build something. It works. Next session, you add a feature. Old stuff breaks. Nobody knows why. Sound familiar?
         </p>
       </AnimatedSection>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
@@ -253,25 +262,25 @@ const ProblemSection = () => (
   </section>
 );
 
-/* ─── Solution Pillars ─── */
+/* ─── How It Works — 3 Pillars ─── */
 const pillars = [
   {
     icon: Server,
-    title: "MCP Guardian",
-    subtitle: "During Coding",
-    description: "Crystal connects to your AI assistant via MCP protocol. It watches in real-time, validates file placement, enforces domain boundaries, and provides project context.",
+    title: "While You Code",
+    subtitle: "MCP Connection",
+    description: "Crystal plugs into your AI tool (Cursor, Claude, VS Code). While your AI writes code, Crystal watches and says 'hey, that file belongs somewhere else' or 'that's a security risk.'",
   },
   {
     icon: Terminal,
-    title: "CLI Tool",
-    subtitle: "Before Deploy",
-    description: "Run crystal check from your terminal. Get a health score (A-F) with plain-English explanations. Auto-fix simple issues. Works with any project.",
+    title: "Before You Ship",
+    subtitle: "One Command",
+    description: "Run crystal check. You get a score from A to F. It tells you what's wrong in plain English. Fix the red items. Ship with confidence. That's it.",
   },
   {
     icon: ShieldCheck,
-    title: "CI/CD Gates",
-    subtitle: "On Every Push",
-    description: "Copy one YAML file to your repo. Every push runs architecture, security, and quality checks. Bad code gets blocked with a clear report.",
+    title: "On Every Push",
+    subtitle: "Automatic",
+    description: "Add one file to your GitHub repo. Now every time you push code, Crystal checks it automatically. Bad code can't sneak through.",
   },
 ];
 
@@ -279,13 +288,13 @@ const SolutionSection = () => (
   <section id="solution" data-testid="solution-section" className="py-24 md:py-32 border-t border-white/[0.05]">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <AnimatedSection>
-        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">The Solution</p>
+        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">How It Works</p>
         <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white max-w-3xl">
-          Guardrails,<br />
-          <span className="text-neutral-500">not roadblocks.</span>
+          It watches your code.<br />
+          <span className="text-neutral-500">So you don't have to.</span>
         </h2>
         <p className="mt-6 text-neutral-400 text-lg max-w-2xl leading-relaxed">
-          Crystal is your building inspector. It checks structure, not creativity. Three layers of protection that work with any vibe coding platform.
+          Crystal doesn't slow you down. It runs quietly and tells you when something's off. Think of it as spell-check, but for your code structure.
         </p>
       </AnimatedSection>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-16">
@@ -315,10 +324,10 @@ const QuickStartSection = () => (
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <AnimatedSection>
         <div className="text-center mb-16">
-          <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Quick Start</p>
+          <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Get Started</p>
           <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white">
-            Up and running in<br />
-            <span className="text-neutral-500">30 seconds.</span>
+            Three commands.<br />
+            <span className="text-neutral-500">That's all.</span>
           </h2>
         </div>
       </AnimatedSection>
@@ -328,22 +337,21 @@ const QuickStartSection = () => (
           copyText="pip install crystal-guard && crystal init && crystal check"
           lines={[
             { type: "command", text: "pip install crystal-guard" },
-            { type: "output", text: "Successfully installed crystal-guard-0.1.0" },
+            { type: "output", text: "Installed crystal-guard-0.1.0" },
             { type: "command", text: "crystal init" },
-            { type: "success", text: "Detected stack: React + Python + MongoDB" },
-            { type: "success", text: "Created .crystal/ configuration" },
-            { type: "success", text: "Loaded 24 architecture rules" },
+            { type: "success", text: "Found: React + Python + MongoDB" },
+            { type: "success", text: "Created .crystal/ config" },
+            { type: "success", text: "15 quality checks loaded" },
             { type: "command", text: "crystal check" },
             { type: "output", text: "" },
             { type: "success", text: "Architecture     PASS" },
             { type: "success", text: "Domain Purity    PASS" },
             { type: "warning", text: "Security         1 issue found" },
-            { type: "success", text: "Dependencies     PASS" },
-            { type: "warning", text: "Placeholders     2 issues found" },
+            { type: "success", text: "Code Hygiene     PASS" },
             { type: "output", text: "" },
-            { type: "output", text: "HEALTH SCORE: B (78/100)" },
-            { type: "error", text: "[CRITICAL] sec-003: API key in src/config.js:15" },
-            { type: "warning", text: "[LOW] hyg-001: TODO in backend/services/pay.py:42" },
+            { type: "output", text: "Health: B (82/100)" },
+            { type: "error", text: "[CRITICAL] API key found in src/config.js line 15" },
+            { type: "output", text: "Fix: Move this key to your .env file" },
           ]}
         />
       </AnimatedSection>
@@ -351,25 +359,53 @@ const QuickStartSection = () => (
   </section>
 );
 
-/* ─── Features Grid — The 7 Core Features ─── */
+/* ─── Features Grid — The 7 Things Crystal Does ─── */
 const features = [
-  { icon: FileText, title: "Session Prompt Generator", description: "Reads your project automatically — git history, file count, test count — and writes a structured prompt. Paste it. The AI knows exactly where you left off." },
-  { icon: ShieldCheck, title: "15 Quality Gates", description: "Architecture, domain purity, security, dependencies, and hygiene checks. If any gate fails, you know exactly what broke and where. Nothing ships broken." },
-  { icon: BarChart3, title: "Baseline Tracking", description: "Tracks file count, test count, endpoints, and violations across sessions. If anything goes backwards, you see it immediately. Your project only moves forward." },
-  { icon: RefreshCw, title: "Session Handoff", description: "Generates a handoff document after every session. What was built, what changed, what gates passed. Context travels with you across platforms." },
-  { icon: Zap, title: "MCP Tools", description: "The AI assistant gets direct access to quality tools while it codes. It calls run_tests, check_purity, verify_gates in real time — not after the fact." },
-  { icon: FolderTree, title: "Architecture Rules", description: "An architecture.md that lives in your repo. Every AI tool reads it. Every fork carries it. Rules survive session resets and platform switches." },
-  { icon: Layers, title: "Technical Debt Tracker", description: "Logs every gate failure across sessions. Builds a picture of where debt is growing. You see the rot before it kills your project." },
+  {
+    icon: FileText,
+    title: "Picks Up Where You Left Off",
+    description: "Every time you start a new AI chat, you lose context. Crystal reads your project and writes a summary. Paste it in. Your AI knows exactly what happened before.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "15 Automatic Checks",
+    description: "Is your password hardcoded? Is there database code in your frontend? Missing tests? Crystal runs 15 checks and tells you exactly what to fix, in plain English.",
+  },
+  {
+    icon: BarChart3,
+    title: "Tracks Your Progress",
+    description: "Yesterday you had 47 files and 12 tests. Today you have 52 files and 11 tests. One test disappeared. Crystal notices and tells you.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Works Across Tools",
+    description: "Start in Cursor, continue in Claude, finish in Emergent. Crystal generates a handoff that works everywhere. Your context is never locked to one tool.",
+  },
+  {
+    icon: Zap,
+    title: "Helps Your AI in Real-Time",
+    description: "Crystal plugs into your AI assistant via MCP. While the AI writes code, Crystal can say 'that file goes in the wrong folder' before it's too late.",
+  },
+  {
+    icon: FolderTree,
+    title: "Rules That Stick",
+    description: "You define your project rules once. 'Keep database code in the backend.' 'No secrets in the code.' Crystal enforces them every session, every tool, every time.",
+  },
+  {
+    icon: Layers,
+    title: "Shows Where Problems Pile Up",
+    description: "Skipped tests here, a TODO there, a security warning ignored. Crystal tracks it all across sessions and shows you: here's your debt, here's what to fix first.",
+  },
 ];
 
 const FeaturesSection = () => (
   <section id="features" data-testid="features-section" className="py-24 md:py-32 border-t border-white/[0.05]">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <AnimatedSection>
-        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Features</p>
+        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">What Crystal Does</p>
         <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white max-w-3xl">
-          Seven features.<br />
-          <span className="text-neutral-500">Zero broken deploys.</span>
+          Seven things that keep<br />
+          <span className="text-neutral-500">your project alive.</span>
         </h2>
       </AnimatedSection>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
@@ -393,18 +429,18 @@ const FeaturesSection = () => (
 /* ─── Use Cases ─── */
 const useCases = [
   {
-    title: "Solo Vibe Coder",
-    description: "You're building your dream app with Cursor or Bolt. Crystal ensures your project doesn't become unmaintainable after a few sessions. Simple health checks catch issues before they compound.",
-    tag: "Individual",
+    title: "Building Alone",
+    description: "You're making your app with AI. After a few sessions, things start breaking. Crystal keeps your project clean so it works today, tomorrow, and next month.",
+    tag: "Solo",
   },
   {
-    title: "Team Projects",
-    description: "Multiple people vibing on the same codebase. Crystal enforces consistent architecture rules so one person's AI-generated code doesn't break another's. Shared rules, shared quality.",
-    tag: "Collaboration",
+    title: "Building with Others",
+    description: "Two people using AI on the same project. One person's AI rewrites what the other built. Crystal enforces shared rules so everyone's work stays intact.",
+    tag: "Team",
   },
   {
-    title: "Open Source",
-    description: "Community contributions via AI-assisted coding. Crystal CI/CD gates automatically verify every PR meets architecture standards. Quality without gatekeeping.",
+    title: "Open Source Projects",
+    description: "People contribute code using AI tools. Crystal runs on every pull request and makes sure contributions meet your standards. Automatically.",
     tag: "Community",
   },
 ];
@@ -413,10 +449,10 @@ const UseCasesSection = () => (
   <section id="use-cases" data-testid="use-cases-section" className="py-24 md:py-32 border-t border-white/[0.05]">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <AnimatedSection>
-        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Use Cases</p>
+        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Who It's For</p>
         <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white max-w-3xl">
-          Built for every<br />
-          <span className="text-neutral-500">vibe coder.</span>
+          Anyone building<br />
+          <span className="text-neutral-500">with AI.</span>
         </h2>
       </AnimatedSection>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-16">
@@ -441,22 +477,23 @@ const UseCasesSection = () => (
 
 /* ─── Commands Reference ─── */
 const commands = [
-  { command: "crystal init", description: "Initialize Crystal in your project. Auto-detects stack and creates .crystal/ config.", flags: "--stack react-python-mongo" },
-  { command: "crystal check", description: "Run all 15 quality gates and output health report.", flags: "--format json --severity critical" },
-  { command: "crystal handoff", description: "Generate session handoff prompt for your next AI coding session.", flags: "--output handoff.md --copy" },
-  { command: "crystal status", description: "Quick health dashboard with score, baseline comparison, and debt trend.", flags: "" },
-  { command: "crystal gates", description: "Show all 15 quality gates individually with pass/fail status.", flags: "" },
-  { command: "crystal report", description: "Generate detailed markdown report for sharing or PR comments.", flags: "--output report.md" },
+  { command: "crystal init", description: "Set up Crystal for your project. It figures out your tech stack automatically.", flags: "--stack react-python-mongo" },
+  { command: "crystal check", description: "Run all 15 checks and see your project's health score (A to F).", flags: "--format json" },
+  { command: "crystal handoff", description: "Create a summary to paste into your next AI coding session.", flags: "--output handoff.md" },
+  { command: "crystal status", description: "See how your project is doing — score, trends, what changed.", flags: "" },
+  { command: "crystal gates", description: "See each of the 15 checks one by one, with pass or fail.", flags: "" },
+  { command: "crystal architect", description: "Generate an architecture.md file with your project's rules.", flags: "--output architecture.md" },
+  { command: "crystal report", description: "Create a detailed report you can share or attach to a pull request.", flags: "--output report.md" },
 ];
 
 const CommandsSection = () => (
   <section id="commands" data-testid="commands-section" className="py-24 md:py-32 border-t border-white/[0.05]">
     <div className="max-w-7xl mx-auto px-6 md:px-12">
       <AnimatedSection>
-        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Commands Reference</p>
+        <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Commands</p>
         <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white max-w-3xl">
-          Simple commands.<br />
-          <span className="text-neutral-500">Powerful checks.</span>
+          Type a command.<br />
+          <span className="text-neutral-500">Get answers.</span>
         </h2>
       </AnimatedSection>
       <AnimatedSection delay={200}>
@@ -465,8 +502,8 @@ const CommandsSection = () => (
             <thead>
               <tr className="border-b border-white/10 bg-white/[0.02]">
                 <th className="px-6 py-4 text-xs font-mono font-medium text-neutral-400 uppercase tracking-wider">Command</th>
-                <th className="px-6 py-4 text-xs font-mono font-medium text-neutral-400 uppercase tracking-wider hidden md:table-cell">Description</th>
-                <th className="px-6 py-4 text-xs font-mono font-medium text-neutral-400 uppercase tracking-wider hidden lg:table-cell">Flags</th>
+                <th className="px-6 py-4 text-xs font-mono font-medium text-neutral-400 uppercase tracking-wider hidden md:table-cell">What it does</th>
+                <th className="px-6 py-4 text-xs font-mono font-medium text-neutral-400 uppercase tracking-wider hidden lg:table-cell">Options</th>
               </tr>
             </thead>
             <tbody>
@@ -496,7 +533,7 @@ const platforms = ["Cursor", "Windsurf", "Claude Desktop", "VS Code", "Bolt", "L
 const CompatibilityStrip = () => (
   <section data-testid="compatibility-section" className="py-16 border-t border-white/[0.05]">
     <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
-      <p className="text-xs font-mono text-neutral-600 uppercase tracking-widest mb-8">Works with any vibe coding platform</p>
+      <p className="text-xs font-mono text-neutral-600 uppercase tracking-widest mb-8">Works with any AI coding tool</p>
       <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
         {platforms.map((p, i) => (
           <span key={i} data-testid={`platform-${i}`} className="text-sm text-neutral-500 font-medium">{p}</span>
@@ -512,11 +549,11 @@ const Footer = () => (
     <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
       <AnimatedSection>
         <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white">
-          Ready to secure<br />
-          <span className="text-neutral-500">your vibes?</span>
+          Build with AI.<br />
+          <span className="text-neutral-500">Ship with Crystal.</span>
         </h2>
         <p className="mt-6 text-neutral-400 text-lg max-w-xl mx-auto">
-          Crystal Guard is open source and free forever. Star the repo, install the CLI, and start building with confidence.
+          Free. Open source. Takes 30 seconds to set up. Works with every AI coding tool.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
@@ -535,7 +572,7 @@ const Footer = () => (
             data-testid="footer-quickstart-btn"
             className="inline-flex items-center gap-2 rounded-md border border-white/20 bg-transparent px-8 py-4 text-sm font-medium text-white hover:bg-white/10 transition-colors"
           >
-            View Quick Start
+            Get Started
           </a>
         </div>
       </AnimatedSection>
@@ -544,15 +581,15 @@ const Footer = () => (
           <div className="w-6 h-6 rounded-md bg-white/10 border border-white/20 flex items-center justify-center">
             <ShieldCheck size={12} className="text-blue-400" />
           </div>
-          <span className="font-mono text-xs text-neutral-500">Crystal Guard</span>
+          <span className="font-mono text-xs text-neutral-500">Crystal</span>
         </div>
         <p className="text-xs text-neutral-600">
-          MIT License. Built for the vibe coding community.
+          MIT License. Free forever. Built for people who build with AI.
         </p>
         <div className="flex items-center gap-6">
           <a href="https://github.com" className="text-xs text-neutral-500 hover:text-white transition-colors">GitHub</a>
-          <a href="#commands" className="text-xs text-neutral-500 hover:text-white transition-colors">Docs</a>
-          <a href="#quick-start" className="text-xs text-neutral-500 hover:text-white transition-colors">Quick Start</a>
+          <a href="#commands" className="text-xs text-neutral-500 hover:text-white transition-colors">Commands</a>
+          <a href="#quick-start" className="text-xs text-neutral-500 hover:text-white transition-colors">Get Started</a>
         </div>
       </div>
     </div>

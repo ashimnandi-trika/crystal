@@ -26,13 +26,16 @@ from crystal_guard.reporters.terminal import (
 )
 from crystal_guard.reporters.json_reporter import generate_json_report
 from crystal_guard.reporters.markdown import generate_markdown_report
+from crystal_guard.architect import generate_architecture_md
 
 
 app = typer.Typer(
     name="crystal",
-    help="Crystal Guard — Architecture guardian for vibe-coded projects.",
+    help="Crystal — Your AI coding buddy that protects architecture integrity and domain purity.",
     no_args_is_help=True,
 )
+mcp_app = typer.Typer(help="MCP server commands.")
+app.add_typer(mcp_app, name="mcp")
 console = Console()
 
 
@@ -373,6 +376,42 @@ def report(
     md = generate_markdown_report(health, issues, config)
     Path(output).write_text(md)
     console.print(f"[green]Report generated: {output}[/green]")
+
+
+@app.command()
+def architect(
+    path: str = typer.Argument(".", help="Project path"),
+    output: str = typer.Option("architecture.md", "--output", "-o", help="Output file path"),
+):
+    """Generate architecture.md — your project's rules in one file.
+
+    This file tells every AI tool your project's rules. Put it in your repo.
+    Every AI reads it. Every fork carries it. Rules survive session resets.
+    """
+    project_path = str(Path(path).resolve())
+    md = generate_architecture_md(project_path)
+
+    output_path = Path(project_path) / output
+    output_path.write_text(md)
+    console.print(f"[green]Generated: {output_path}[/green]")
+    console.print("[dim]Add this file to your repo. Every AI tool will read it.[/dim]")
+
+
+@mcp_app.command("serve")
+def mcp_serve(
+    transport: str = typer.Option("stdio", "--transport", "-t", help="Transport: stdio or http"),
+    port: int = typer.Option(8080, "--port", "-p", help="Port for HTTP transport"),
+):
+    """Start the Crystal MCP server for AI assistant integration.
+
+    Your AI tool connects to this server and gets access to Crystal's
+    quality checks, project context, and architecture rules — in real time.
+    """
+    console.print(f"[bold]Starting Crystal MCP Server[/bold] (transport: {transport})")
+    console.print("[dim]Your AI assistant can now use Crystal tools while coding.[/dim]")
+
+    from crystal_guard.mcp.server import run_server
+    run_server(transport=transport, port=port)
 
 
 if __name__ == "__main__":
