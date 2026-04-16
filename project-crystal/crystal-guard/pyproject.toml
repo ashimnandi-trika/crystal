@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "crystal-guard"
+name = "crystal-code"
 version = "0.1.0"
 description = "Architecture guardian for vibe-coded projects"
 readme = "README.md"
@@ -32,8 +32,8 @@ dev = ["pytest>=7.0", "ruff>=0.1.0"]
 crystal = "crystal_guard.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/crystalguard/crystal-guard"
-Repository = "https://github.com/crystalguard/crystal-guard"
+Homepage = "https://github.com/crystalguard/crystal-code"
+Repository = "https://github.com/crystalguard/crystal-code"
 
 [tool.setuptools.packages.find]
 where = ["src"]
