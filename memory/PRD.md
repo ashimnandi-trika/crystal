@@ -1,87 +1,91 @@
-# Project Crystal — PRD
+# Crystal — PRD
 
 ## Date: January 2026
-## Status: Phase 1 Complete
+## Status: Phase 2 Complete
 
 ---
 
 ## Original Problem Statement
-Build "Project Crystal" — an open-source project management tool for vibe coders. MCP servers and agent with landing page. Python stack. Help maintain architecture integrity, domain purity, session continuity. CI/CD verification with audit gates. Platform-agnostic. Simple for non-coders, effective for real issues.
+Build "Project Crystal" — open-source tool for vibe coders. MCP servers, agent, landing page, GitHub repo. Python stack. Maintain architecture integrity, domain purity, session continuity. CI/CD verification with audit gates. Platform-agnostic. Simple for non-coders. Renamed from "Crystal Guard" to just "Crystal".
+
+## Branding
+- **Name**: Crystal
+- **Tagline**: "Your AI coding buddy that protects architecture integrity and domain purity"
+- **Sub-tagline**: "So your project ships clean. Every time."
 
 ## User Persona
 **Primary**: Non-technical person using vibe coding platforms to build real apps.
-**Secondary**: Technical developers using AI assistants who want automated guardrails.
+**Secondary**: Technical developers using AI assistants wanting automated guardrails.
 
-## Core Requirements — The 7 Features
-1. **Session Prompt Generator** — reads git, files, tests; generates structured prompt for next AI session
-2. **Quality Gates** — 15 automated checks (architecture, domain, security, hygiene)
-3. **Baseline Tracking** — tracks file count, test count, endpoints, violations across sessions
-4. **Session Handoff** — generates handoff document with what was built/changed/next
-5. **MCP Tools** — AI assistant gets direct access to quality tools during coding
-6. **Architecture Rules** — rules file that survives session resets and platform switches
-7. **Technical Debt Tracker** — logs every failure across sessions, shows where debt grows
+## The 7 Core Features
+1. **Session Prompt Generator** — reads git, files, tests; generates paste-ready prompt
+2. **15 Quality Gates** — architecture, domain, security, hygiene checks
+3. **Baseline Tracking** — tracks metrics across sessions, flags regressions
+4. **Session Handoff** — generates handoff doc that works across platforms
+5. **MCP Tools** — AI assistant accesses quality tools while coding (LIVE)
+6. **Architecture Rules** — architecture.md generated and enforced
+7. **Technical Debt Tracker** — logs failures across sessions, shows trends
 
 ---
 
 ## What's Been Implemented
 
-### Phase 0 — Strategy & Landing Page (Complete)
-- 11 strategic documents in `/app/project-crystal/docs/`
-- 10 build prompts in `/app/project-crystal/prompts/`
-- YAML rules specification
-- Landing page (React) — hero, stats, pillars, quick start, features, commands, footer
+### Phase 0 — Strategy & Documentation (Complete)
+- 11 strategic documents, 10 build prompts, YAML rules spec
 
-### Phase 1 — Crystal Guard Python CLI (Complete, tested 98%)
-- **Package**: `/app/project-crystal/crystal-guard/` — installable via `pip install -e .`
-- **Stack Detector**: Auto-detects React, Next.js, Python, Node, MongoDB, PostgreSQL
-- **4 Analyzers** implementing 15 quality gates:
-  - `architecture.py` — gates 1-4 (dirs, files, sprawl, nesting)
-  - `domain.py` — gates 5-7 (DB in frontend, env vars, crypto in frontend)
-  - `security.py` — gates 8-11 (API keys, passwords, key formats, .env exposure)
-  - `placeholders.py` — gates 12-15 (TODO, placeholders, debug logs, localhost)
-- **Health Scoring**: A-F grades, 100-point system, weighted by severity
-- **Baseline Tracking**: `.crystal/baseline.json` — cross-session metric snapshots
-- **Technical Debt Tracker**: `.crystal/debt.json` — recurring issue accumulation
-- **Session Handoff Generator**: `crystal handoff` — structured prompt with git state, metrics, gates, debt, PRD
-- **3 Reporters**: Terminal (Rich), JSON (CI/CD), Markdown (PR comments)
-- **2 Rule Sets**: react-python-mongo, generic (YAML, extensible)
-- **6 CLI Commands**: init, check, status, handoff, gates, report
-- **GitHub Actions Workflow**: `.github/workflows/crystal.yml`
-- **Test Fixtures**: good_project (A/100), bad_project (F/0)
-- **README.md**, **LICENSE** (MIT)
+### Phase 1 — Crystal Core + CLI (Complete, 100%)
+- 4 analyzers implementing 15 quality gates
+- Health scoring (A-F), baseline tracking, debt tracker
+- Session handoff generator
+- 3 reporters (terminal/JSON/markdown), 2 rule sets
+- 6 CLI commands: init, check, status, handoff, gates, report
 
-### Landing Page Updates
-- Updated features section to show all 7 features
-- Updated commands table with handoff and gates
-- Updated hero terminal preview
+### Phase 2 — MCP Server + Architect + Branding (Complete, 100%)
+- **FastMCP Server** (`crystal mcp serve`): 8 tools + 3 resources
+  - Tools: check_architecture, check_domain_purity, check_security, run_all_checks, validate_file_placement, get_project_context, get_health_score, update_prd
+  - Resources: crystal://health, crystal://rules, crystal://prd
+  - Transports: stdio (Cursor/Claude) and HTTP
+- **`crystal architect`**: Generates architecture.md with stack info, rules, session instructions
+- **Branding**: Renamed to "Crystal", simplified all copy for non-technical users
+- **Landing Page**: Complete rewrite with simplified language
+  - "Picks Up Where You Left Off", "15 Automatic Checks", "Tracks Your Progress"
+  - "Build with AI. Ship with Crystal."
+- **8 CLI Commands**: init, check, status, handoff, gates, report, architect, mcp serve
+
+### Repo Structure: `/app/project-crystal/crystal-guard/`
+```
+src/crystal_guard/
+  __init__.py, cli.py, config.py, detector.py
+  architect.py, baseline.py, debt.py, handoff.py
+  analyzers/ (architecture, domain, security, placeholders)
+  scoring/ (health)
+  reporters/ (terminal, json, markdown)
+  rules/ (loader + builtin YAML)
+  mcp/ (server.py — FastMCP)
+```
 
 ---
 
 ## Prioritized Backlog
 
-### P0 (Next Session)
-- [ ] **Phase 2**: Build Crystal MCP Server (FastMCP)
-  - Expose analyzers as MCP tools
-  - crystal://prd, crystal://rules, crystal://health resources
-  - Platform config guides (Cursor, Claude Desktop, VS Code)
-- [ ] `crystal architect` command — generate architecture.md from rules
+### P0
+- [ ] Publish to PyPI (`pip install crystal-guard` from real PyPI)
+- [ ] Test MCP server with Cursor and Claude Desktop
+- [ ] Test GitHub Actions workflow on real repo
 
 ### P1
-- [ ] **Phase 3**: CI/CD Integration
-  - Test the GitHub Actions workflow on a real repo
-  - PR comment integration
-- [ ] PyPI package publication (`pip install crystal-guard` from PyPI)
-- [ ] More stack rules (Next.js, Vue, Django, Rails)
+- [ ] More stack rules (Next.js, Vue, Django, Rails, Go)
+- [ ] `crystal fix --dry-run` auto-fix command
+- [ ] Comprehensive test suite (pytest)
 
 ### P2
-- [ ] **Phase 4**: Crystal Agent (AI-powered deep analysis)
-- [ ] `crystal fix --dry-run` auto-fix command
-- [ ] Health badge for README (shield.io style)
+- [ ] Crystal Agent (AI-powered deep analysis)
+- [ ] Health badge for README
 - [ ] VS Code extension
 - [ ] Product Hunt / HN launch
 
 ## Next Tasks
-1. Build MCP server (Phase 2) — expose all tools via FastMCP
-2. Publish to PyPI for real `pip install crystal-guard`
-3. Create `crystal architect` command
-4. Test CI/CD workflow on real GitHub repo
+1. Publish to PyPI (prepare MANIFEST.in, verify package)
+2. Test MCP with real Cursor/Claude Desktop
+3. Test CI/CD on real GitHub repo
+4. Add more stack rule sets
