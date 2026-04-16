@@ -1,67 +1,53 @@
 # Crystal — PRD
 
 ## Date: January 2026
-## Status: Phase 2 Complete
+## Status: Phase 3 Complete — Design Masterpiece + PyPI + Stack Rules
 
 ---
-
-## Original Problem Statement
-Build "Project Crystal" — open-source tool for vibe coders. MCP servers, agent, landing page, GitHub repo. Python stack. Maintain architecture integrity, domain purity, session continuity. CI/CD verification with audit gates. Platform-agnostic. Simple for non-coders. Renamed from "Crystal Guard" to just "Crystal".
 
 ## Branding
 - **Name**: Crystal
-- **Tagline**: "Your AI coding buddy that protects architecture integrity and domain purity"
-- **Sub-tagline**: "So your project ships clean. Every time."
+- **Line 1**: Crystal (massive hero text)
+- **Line 2**: Clean code that ships. (bold punch line)
+- **Line 3**: Your AI coding buddy that protects architecture integrity and domain purity.
 
-## User Persona
-**Primary**: Non-technical person using vibe coding platforms to build real apps.
-**Secondary**: Technical developers using AI assistants wanting automated guardrails.
+## What's Been Implemented (Cumulative)
 
-## The 7 Core Features
-1. **Session Prompt Generator** — reads git, files, tests; generates paste-ready prompt
-2. **15 Quality Gates** — architecture, domain, security, hygiene checks
-3. **Baseline Tracking** — tracks metrics across sessions, flags regressions
-4. **Session Handoff** — generates handoff doc that works across platforms
-5. **MCP Tools** — AI assistant accesses quality tools while coding (LIVE)
-6. **Architecture Rules** — architecture.md generated and enforced
-7. **Technical Debt Tracker** — logs failures across sessions, shows trends
-
----
-
-## What's Been Implemented
-
-### Phase 0 — Strategy & Documentation (Complete)
+### Phase 0 — Strategy & Documentation
 - 11 strategic documents, 10 build prompts, YAML rules spec
 
-### Phase 1 — Crystal Core + CLI (Complete, 100%)
-- 4 analyzers implementing 15 quality gates
-- Health scoring (A-F), baseline tracking, debt tracker
-- Session handoff generator
-- 3 reporters (terminal/JSON/markdown), 2 rule sets
+### Phase 1 — Crystal Core + CLI
+- 4 analyzers (15 quality gates), health scoring, baseline tracking
+- Debt tracker, session handoff generator, 3 reporters
 - 6 CLI commands: init, check, status, handoff, gates, report
 
-### Phase 2 — MCP Server + Architect + Branding (Complete, 100%)
-- **FastMCP Server** (`crystal mcp serve`): 8 tools + 3 resources
-  - Tools: check_architecture, check_domain_purity, check_security, run_all_checks, validate_file_placement, get_project_context, get_health_score, update_prd
-  - Resources: crystal://health, crystal://rules, crystal://prd
-  - Transports: stdio (Cursor/Claude) and HTTP
-- **`crystal architect`**: Generates architecture.md with stack info, rules, session instructions
-- **Branding**: Renamed to "Crystal", simplified all copy for non-technical users
-- **Landing Page**: Complete rewrite with simplified language
-  - "Picks Up Where You Left Off", "15 Automatic Checks", "Tracks Your Progress"
-  - "Build with AI. Ship with Crystal."
-- **8 CLI Commands**: init, check, status, handoff, gates, report, architect, mcp serve
+### Phase 2 — MCP Server + Architect
+- FastMCP server (8 tools + 3 resources, stdio/HTTP)
+- `crystal architect` command (generates architecture.md)
+- Rebranded to "Crystal"
 
-### Repo Structure: `/app/project-crystal/crystal-guard/`
+### Phase 3 — Design Masterpiece + PyPI + Stack Rules (CURRENT)
+- **Landing page redesign**: Picasso-precise typography hierarchy
+  - Hero: Crystal (160px) -> Clean code that ships (44px) -> descriptor (21px)
+  - Authentic terminal windows with macOS dots and glow effect
+  - card-lift hover animations, stat-line top borders, generous spacing
+  - Every text readable, nothing wimpy
+- **SEO**: Full meta tags (OG, Twitter Cards, keywords, description, robots)
+- **PyPI ready**: `python -m build` produces .whl + .tar.gz with all YAML rules
+- **5 stack rule sets**: react-python-mongo, generic, nextjs-prisma, vue-node-express, python-django
+- **Dog-fooding**: Crystal checks itself at A (100/100)
+- **8 CLI commands**: init, check, status, handoff, gates, report, architect, mcp serve
+
+### Architecture: `/app/project-crystal/crystal-guard/`
 ```
 src/crystal_guard/
-  __init__.py, cli.py, config.py, detector.py
-  architect.py, baseline.py, debt.py, handoff.py
+  cli.py, config.py, detector.py, architect.py
+  baseline.py, debt.py, handoff.py
   analyzers/ (architecture, domain, security, placeholders)
-  scoring/ (health)
+  scoring/
   reporters/ (terminal, json, markdown)
-  rules/ (loader + builtin YAML)
-  mcp/ (server.py — FastMCP)
+  rules/builtin/ (5 YAML files)
+  mcp/server.py (FastMCP)
 ```
 
 ---
@@ -69,23 +55,19 @@ src/crystal_guard/
 ## Prioritized Backlog
 
 ### P0
-- [ ] Publish to PyPI (`pip install crystal-guard` from real PyPI)
-- [ ] Test MCP server with Cursor and Claude Desktop
-- [ ] Test GitHub Actions workflow on real repo
+- [ ] Publish to PyPI (need PyPI account + `twine upload dist/*`)
+- [ ] Deploy to custom domain with real SEO
+- [ ] Test MCP with Cursor / Claude Desktop
+- [ ] Test GitHub Actions on real repo
 
 ### P1
-- [ ] More stack rules (Next.js, Vue, Django, Rails, Go)
-- [ ] `crystal fix --dry-run` auto-fix command
-- [ ] Comprehensive test suite (pytest)
+- [ ] More stack rules (Rails, Go, Rust)
+- [ ] `crystal fix --dry-run` auto-fix
+- [ ] Comprehensive pytest test suite
+- [ ] `crystal onboard` interactive wizard
 
 ### P2
 - [ ] Crystal Agent (AI-powered deep analysis)
 - [ ] Health badge for README
 - [ ] VS Code extension
 - [ ] Product Hunt / HN launch
-
-## Next Tasks
-1. Publish to PyPI (prepare MANIFEST.in, verify package)
-2. Test MCP with real Cursor/Claude Desktop
-3. Test CI/CD on real GitHub repo
-4. Add more stack rule sets
