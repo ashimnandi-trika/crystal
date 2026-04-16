@@ -500,6 +500,77 @@ const Commands = () => (
 );
 
 /* ═══════════════════════════════════════════════════
+   CASE STUDY
+   ═══════════════════════════════════════════════════ */
+const CaseStudy = () => (
+  <section id="case-study" data-testid="case-study-section" className="py-28 md:py-40 border-t border-white/[0.04]">
+    <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <Reveal>
+        <p className="text-[13px] font-mono text-blue-400 tracking-[0.2em] uppercase mb-5">Case Study</p>
+        <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white leading-[1.1] max-w-3xl">
+          From F to A<br />
+          <span className="text-neutral-500">in two sessions.</span>
+        </h2>
+        <p className="mt-7 text-neutral-400 text-[18px] max-w-2xl leading-relaxed">
+          Sarah built a todo app with Cursor. It worked. Crystal found 18 issues she didn't know existed, including 3 exposed API keys and database code in the frontend.
+        </p>
+      </Reveal>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+        <Reveal delay={100}>
+          <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.03] p-9">
+            <p className="text-[13px] font-mono text-red-400 tracking-[0.15em] uppercase mb-4">Before Crystal</p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl font-bold text-red-400">F</span>
+                <span className="text-neutral-400 text-[15px]">Health score (0/100)</span>
+              </div>
+              <p className="text-neutral-500 text-[15px]">7 critical security issues</p>
+              <p className="text-neutral-500 text-[15px]">API keys hardcoded in frontend</p>
+              <p className="text-neutral-500 text-[15px]">Database queries in React components</p>
+              <p className="text-neutral-500 text-[15px]">No .gitignore, no tests, 6 TODOs</p>
+              <p className="text-neutral-500 text-[15px]">Context lost every session</p>
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={200}>
+          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.03] p-9">
+            <p className="text-[13px] font-mono text-emerald-400 tracking-[0.15em] uppercase mb-4">After Crystal</p>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl font-bold text-emerald-400">A</span>
+                <span className="text-neutral-400 text-[15px]">Health score (100/100)</span>
+              </div>
+              <p className="text-neutral-500 text-[15px]">0 critical issues</p>
+              <p className="text-neutral-500 text-[15px]">All secrets in environment variables</p>
+              <p className="text-neutral-500 text-[15px]">Clean separation of frontend and backend</p>
+              <p className="text-neutral-500 text-[15px]">5/5 tests passing, production ready</p>
+              <p className="text-neutral-500 text-[15px]">Session handoff preserves context</p>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+
+      <Reveal delay={300}>
+        <div className="mt-12 text-center">
+          <a
+            href="https://github.com/ashimnandi-trika/crystal/blob/main/project-crystal/crystal-guard/examples/case-study-todo-app/CASE-STUDY.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="case-study-link"
+            className="inline-flex items-center gap-2 text-[15px] text-blue-400 hover:text-blue-300 transition-colors font-medium"
+          >
+            Read the full case study
+            <ArrowRight size={16} />
+          </a>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+);
+
+/* ═══════════════════════════════════════════════════
    PLATFORMS
    ═══════════════════════════════════════════════════ */
 const platforms = ["Cursor", "Windsurf", "Claude Desktop", "VS Code", "Bolt", "Lovable", "Replit", "Emergent"];
@@ -588,6 +659,7 @@ function App() {
       <Features />
       <UseCases />
       <Commands />
+      <CaseStudy />
       <Platforms />
       <Footer />
     </div>
