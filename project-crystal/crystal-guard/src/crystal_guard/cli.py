@@ -1,7 +1,5 @@
 """Crystal Guard CLI — The main entry point."""
 
-import sys
-import json
 import typer
 from pathlib import Path
 from rich.console import Console
@@ -42,6 +40,7 @@ console = Console()
 def run_all_analyzers(project_path: str, rules: dict, config: CrystalConfig) -> list:
     """Run all enabled analyzers and return combined issues."""
     all_issues = []
+    ignore_patterns = config.ignore_files
 
     if config.checks.get("architecture", True):
         all_issues.extend(architecture.analyze(project_path, rules))
@@ -58,6 +57,21 @@ def run_all_analyzers(project_path: str, rules: dict, config: CrystalConfig) -> 
     # Filter ignored rules
     ignored = set(config.ignore_rules)
     all_issues = [i for i in all_issues if i.rule_id not in ignored]
+
+    # Filter files matching ignore patterns
+    if ignore_patterns:
+        from fnmatch import fnmatch
+        filtered = []
+        for issue in all_issues:
+            skip = False
+            for pattern in ignore_patterns:
+                pattern_clean = pattern.rstrip("/**").rstrip("/*")
+                if issue.file.startswith(pattern_clean) or fnmatch(issue.file, pattern):
+                    skip = True
+                    break
+            if not skip:
+                filtered.append(issue)
+        all_issues = filtered
 
     return all_issues
 
@@ -119,7 +133,7 @@ def init(
                                 if isinstance(item, dict) and "expected_dirs" in str(item):
                                     rule_count += 1
 
-    console.print(f"[green]Created .crystal/ configuration[/green]")
+    console.print("[green]Created .crystal/ configuration[/green]")
     console.print(f"[green]Loaded {max(rule_count, 15)} rules for {detected['stack_id']}[/green]")
     console.print(f"\nRun [cyan]crystal check {path}[/cyan] to analyze your project.")
 
@@ -329,7 +343,7 @@ def handoff(
     if output:
         Path(output).write_text(handoff_text)
         console.print(f"[green]Handoff prompt saved to {output}[/green]")
-        console.print(f"[dim]Paste the contents into your next AI coding session.[/dim]")
+        console.print("[dim]Paste the contents into your next AI coding session.[/dim]")
     elif copy:
         try:
             import pyperclip
@@ -494,7 +508,7 @@ def test(
         console.print(f"[dim]Skipped: {results['skipped']}[/dim]")
 
     if verbose and results["output"]:
-        console.print(f"\n[dim]--- Full Output ---[/dim]")
+        console.print("\n[dim]--- Full Output ---[/dim]")
         console.print(results["output"][:3000])
 
     if results["failed"] > 0:
@@ -532,7 +546,7 @@ def fix_prompt(
     if output:
         Path(output).write_text(prompt_text)
         console.print(f"[green]Fix prompts saved to {output}[/green]")
-        console.print(f"[dim]Paste the contents into your AI coding tool.[/dim]")
+        console.print("[dim]Paste the contents into your AI coding tool.[/dim]")
     elif copy:
         try:
             import pyperclip

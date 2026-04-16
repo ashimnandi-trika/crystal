@@ -326,6 +326,36 @@
         "hyg-002",
         "hyg-003"
       ]
+    },
+    {
+      "timestamp": "2026-04-16T13:28:05.618832+00:00",
+      "health_score": 0,
+      "issue_count": 17,
+      "issues_by_severity": {
+        "low": 6,
+        "high": 2,
+        "critical": 7,
+        "medium": 2
+      },
+      "issue_ids": [
+        "arch-003",
+        "arch-003",
+        "arch-007",
+        "dom-001",
+        "dom-003",
+        "sec-004",
+        "sec-001",
+        "sec-003",
+        "sec-001",
+        "sec-002",
+        "sec-003",
+        "hyg-001",
+        "hyg-003",
+        "hyg-004",
+        "hyg-001",
+        "hyg-002",
+        "hyg-003"
+      ]
     }
   ],
   "recurring": {
@@ -344,8 +374,8 @@
       "message": "Recommended file/directory 'README.md' is missing.",
       "severity": "low",
       "first_seen": "2026-04-16T08:39:49.320490+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 11
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 12
     },
     "arch-003:tests/": {
       "rule_id": "arch-003",
@@ -353,8 +383,8 @@
       "message": "Recommended file/directory 'tests/' is missing.",
       "severity": "low",
       "first_seen": "2026-04-16T08:39:49.320490+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 11
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 12
     },
     "arch-007:tests/": {
       "rule_id": "arch-007",
@@ -362,8 +392,8 @@
       "message": "No test directory or test files found. Your project has no tests.",
       "severity": "high",
       "first_seen": "2026-04-16T08:39:49.320490+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 11
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 12
     },
     "sec-004:.env": {
       "rule_id": "sec-004",
@@ -371,8 +401,8 @@
       "message": ".env file is not in .gitignore. Your secrets will be committed to git.",
       "severity": "critical",
       "first_seen": "2026-04-16T08:39:49.320490+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 11
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 12
     },
     "dom-001:frontend/src/App.jsx": {
       "rule_id": "dom-001",
@@ -380,8 +410,8 @@
       "message": "Database access detected in frontend code. Frontend should only communicate with backend via API calls.",
       "severity": "critical",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "dom-003:frontend/src/App.jsx": {
       "rule_id": "dom-003",
@@ -389,8 +419,8 @@
       "message": "Server-side environment variable in frontend. Only REACT_APP_ prefixed vars are available in browser.",
       "severity": "high",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "sec-001:frontend/src/App.jsx": {
       "rule_id": "sec-001",
@@ -398,8 +428,8 @@
       "message": "Hardcoded API key detected. Use environment variables instead.",
       "severity": "critical",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "sec-003:frontend/src/App.jsx": {
       "rule_id": "sec-003",
@@ -407,8 +437,8 @@
       "message": "Recognized API key format found in code.",
       "severity": "critical",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "sec-001:backend/server.py": {
       "rule_id": "sec-001",
@@ -416,8 +446,8 @@
       "message": "Hardcoded API key detected. Use environment variables instead.",
       "severity": "critical",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "sec-002:backend/server.py": {
       "rule_id": "sec-002",
@@ -425,8 +455,8 @@
       "message": "Hardcoded password detected. Passwords should never appear in code.",
       "severity": "critical",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "sec-003:backend/server.py": {
       "rule_id": "sec-003",
@@ -434,8 +464,8 @@
       "message": "Recognized API key format found in code.",
       "severity": "critical",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "hyg-001:frontend/src/App.jsx": {
       "rule_id": "hyg-001",
@@ -443,8 +473,8 @@
       "message": "Unresolved TODO/FIXME comment. Complete or remove before deploying.",
       "severity": "low",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "hyg-003:frontend/src/App.jsx": {
       "rule_id": "hyg-003",
@@ -452,8 +482,8 @@
       "message": "Debug console.log found. Remove before deploying.",
       "severity": "low",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "hyg-004:frontend/src/App.jsx": {
       "rule_id": "hyg-004",
@@ -461,8 +491,8 @@
       "message": "Hardcoded localhost URL. Use environment variables.",
       "severity": "medium",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "hyg-001:backend/server.py": {
       "rule_id": "hyg-001",
@@ -470,8 +500,8 @@
       "message": "Unresolved TODO/FIXME comment. Complete or remove before deploying.",
       "severity": "low",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "hyg-002:backend/server.py": {
       "rule_id": "hyg-002",
@@ -479,8 +509,8 @@
       "message": "Placeholder value detected. Replace with real values.",
       "severity": "medium",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     },
     "hyg-003:backend/server.py": {
       "rule_id": "hyg-003",
@@ -488,8 +518,8 @@
       "message": "Debug console.log found. Remove before deploying.",
       "severity": "low",
       "first_seen": "2026-04-16T08:40:57.241793+00:00",
-      "last_seen": "2026-04-16T10:00:16.316097+00:00",
-      "count": 10
+      "last_seen": "2026-04-16T13:28:05.618832+00:00",
+      "count": 11
     }
   }
 }

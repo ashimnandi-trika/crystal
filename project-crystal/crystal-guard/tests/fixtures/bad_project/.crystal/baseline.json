@@ -174,5 +174,21 @@
       "medium": 2,
       "low": 6
     }
+  },
+  {
+    "timestamp": "2026-04-16T13:28:05.618376+00:00",
+    "file_count": 4,
+    "test_file_count": 0,
+    "total_lines": 28,
+    "endpoint_count": 2,
+    "health_score": 0,
+    "grade": "F",
+    "violation_count": 17,
+    "violations": {
+      "critical": 7,
+      "high": 2,
+      "medium": 2,
+      "low": 6
+    }
   }
 ]

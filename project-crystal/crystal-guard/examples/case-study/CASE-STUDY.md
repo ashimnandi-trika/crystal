@@ -110,7 +110,7 @@ CRYSTAL — 15 QUALITY GATES
 | 5 | `import MongoClient from 'mongodb'` in App.jsx | Anyone can see database access code in browser |
 | 7 | `process.env.MONGO_PASSWORD` in frontend | Server env vars don't work in browsers |
 | 8 | API key in App.jsx line 6 AND server.py line 18 | Anyone sees the key, uses your OpenAI account |
-| 9 | `password = "MyRealPassword123"` in server.py | Database password visible to anyone reading code |
+| 9 | `password = "..."` written directly in server.py | Database password visible to anyone reading code |
 | 11 | .env not in .gitignore | Stripe key, OpenAI key, DB password all exposed |
 | 12 | 7 TODO/FIXME comments | Unfinished features that will break in production |
 | 13 | "example.com" and "test@test.com" in code | Users will see placeholder text |

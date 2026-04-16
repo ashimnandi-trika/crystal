@@ -1,50 +1,51 @@
-# HACKER NEWS POST — Copy-paste this
+# HACKER NEWS ANNOUNCEMENT — Copy-paste ready
 
 ## Submit at: https://news.ycombinator.com/submit
 
 ### Title:
-Show HN: Crystal – CLI that runs 15 quality gates on AI-generated code
+Show HN: We scanned a vibe-coded todo app. It had 29 problems nobody knew about.
 
 ### URL:
 https://github.com/ashimnandi-trika/crystal
 
-### After posting, add this as the first comment:
+### First comment (post immediately after submitting):
 
 ---
 
-Hi HN. I built Crystal because I kept shipping broken code from AI coding sessions.
+We took a simple todo app built across 4 AI coding sessions in Cursor and scanned it with Crystal, an open-source CLI we built.
 
-The problem: tools like Cursor, Claude, Bolt generate code fast. But across sessions, things degrade. The AI rewrites working code, puts database queries in React components, hardcodes API keys, and nobody catches it because the code "works" locally.
+The app worked perfectly on localhost. The developer was about to push it to GitHub and deploy.
 
-Crystal is a Python CLI that runs 15 static analysis checks designed specifically for patterns that AI coding tools produce:
+Crystal found 29 issues. 5 were critical:
 
-**Architecture** (4 gates): Are files organized? Do expected directories exist? Is there a test folder?
+1. An OpenAI API key was hardcoded in two files — the frontend React component and the backend server. Anyone who sees the code gets the key.
 
-**Domain Purity** (3 gates): Is there database code in the frontend? Are env vars used correctly? Is crypto running in the browser?
+2. A MongoDB import was sitting in a React component. That means database access logic is visible to anyone who opens browser dev tools.
 
-**Security** (4 gates): Are API keys hardcoded? Passwords in code? .env in .gitignore? CORS wildcard?
+3. The database password was written directly in server.py: `password = "..."`. Not in an environment variable. In the code.
 
-**Code Hygiene** (4 gates): TODOs in production? console.log everywhere? localhost URLs? Placeholder values?
+4. There was no .gitignore. The .env file containing the Stripe secret key, OpenAI key, and database password would have been committed to GitHub on the next push.
 
-Key features beyond the 15 gates:
+5. CORS was set to wildcard (*), meaning any website on the internet could make requests to the API.
 
-- **Session handoff**: `crystal handoff` generates a structured prompt you paste into your next AI session. Context survives across sessions and tools.
+Beyond the critical issues, there were 7 unfinished TODO comments, 4 console.log debug statements, 5 hardcoded localhost URLs that would break on deploy, and placeholder text like "test@test.com" and "example.com" in the UI.
 
-- **Fix prompts**: When checks fail, `crystal fix-prompt` generates paste-ready prompts with what's wrong, why it matters (in plain English), and step-by-step fix instructions. Designed for people who can't read a stack trace.
+The developer had no idea about any of this. The app worked. That was enough. Until it wasn't.
 
-- **Stage pipeline**: `crystal check --stage local|staging|production` with escalating strictness. Local is lenient (you're building). Production is zero-tolerance (all tests must pass, no TODOs, no debug logs).
+We built Crystal to catch exactly this. It runs 15 checks across architecture, security, domain purity, and code hygiene. When something fails, it generates a paste-ready prompt — you copy it into your AI tool, the AI fixes the exact issue.
 
-- **MCP server**: `crystal mcp serve` lets AI assistants (Cursor, Claude Desktop) call Crystal's tools directly while coding. Real-time, not after the fact.
+The real project files are in the repo. You can clone it and run the scan yourself:
 
-- **Test runner**: `crystal test` detects and runs your actual test suite (pytest, npm test), not just checks if test files exist.
+```
+pip install crystal-code
+cd examples/case-study/before
+crystal init && crystal check
+```
 
-I ran Crystal on a real project built across 4 AI sessions. It found 29 issues including 5 critical — hardcoded API keys in 2 files, a MongoDB import in a React component, an exposed .env. The case study with actual terminal output is here: https://github.com/ashimnandi-trika/crystal/blob/main/project-crystal/crystal-guard/examples/case-study/CASE-STUDY.md
+You'll see the same 29 issues, the same F score.
 
-Tech stack: Python, Typer, Rich, FastMCP. 10 CLI commands. 5 built-in YAML rule sets (React+Python+Mongo, Next.js+Prisma, Vue+Node, Django, Generic). Rules are YAML so non-developers can contribute.
-
-`pip install crystal-code && crystal init && crystal check`
+Case study with full terminal output: https://github.com/ashimnandi-trika/crystal/blob/main/project-crystal/crystal-guard/examples/case-study/CASE-STUDY.md
 
 Live site: https://build-integrity.emergent.host
-PyPI: https://pypi.org/project/crystal-code/
 
-Happy to answer questions. Feedback on what checks matter most would be valuable.
+Would love feedback on what checks matter most to your workflow.

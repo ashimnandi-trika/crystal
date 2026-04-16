@@ -1,6 +1,5 @@
 """Markdown reporter for PR comments and reports."""
 
-from crystal_guard.analyzers import Issue
 
 
 def generate_markdown_report(health_report, issues: list, config=None) -> str:
@@ -27,7 +26,6 @@ def generate_markdown_report(health_report, issues: list, config=None) -> str:
     for sev in ["critical", "high", "medium", "low"]:
         group = by_sev[sev]
         if group:
-            emoji = {"critical": "X", "high": "!", "medium": "~", "low": "-"}[sev]
             lines.append(f"## {sev.upper()} Issues ({len(group)})")
             lines.append("")
             for issue in group:

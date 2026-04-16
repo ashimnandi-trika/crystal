@@ -6,7 +6,6 @@ Builds a picture of accumulating debt over time.
 
 import json
 from datetime import datetime, timezone
-from pathlib import Path
 from crystal_guard.config import get_crystal_dir
 from crystal_guard.analyzers import Issue
 

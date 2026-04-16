@@ -5,7 +5,7 @@ It survives session resets, platform switches, and context limits.
 """
 
 from pathlib import Path
-from crystal_guard.config import load_config, get_crystal_dir, walk_project_files, CODE_EXTENSIONS, is_test_file
+from crystal_guard.config import load_config, walk_project_files, CODE_EXTENSIONS, is_test_file
 from crystal_guard.detector import detect_stack
 from crystal_guard.rules.loader import load_rules
 from datetime import datetime, timezone

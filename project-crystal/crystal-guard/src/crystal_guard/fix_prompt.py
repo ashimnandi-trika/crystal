@@ -86,7 +86,7 @@ def generate_all_fix_prompts(issues: list[Issue], project_context: str = "") -> 
         lines.append("")
 
     for i, issue in enumerate(sorted_issues, 1):
-        lines.append(f"---")
+        lines.append("---")
         lines.append(f"### Issue {i} of {len(sorted_issues)} ({issue.severity.upper()})")
         lines.append("")
         lines.append(generate_fix_prompt(issue))

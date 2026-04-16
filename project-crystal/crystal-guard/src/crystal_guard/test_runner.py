@@ -114,18 +114,20 @@ def _parse_pytest(result: dict, proc):
         if "passed" in line or "failed" in line or "error" in line:
             parts = line.split()
             for i, part in enumerate(parts):
-                if part == "passed" and i > 0:
-                    try: result["passed"] = int(parts[i-1])
-                    except ValueError: pass
-                elif part == "failed" and i > 0:
-                    try: result["failed"] = int(parts[i-1])
-                    except ValueError: pass
-                elif part == "skipped" and i > 0:
-                    try: result["skipped"] = int(parts[i-1])
-                    except ValueError: pass
-                elif part == "error" and i > 0:
-                    try: result["failed"] += int(parts[i-1])
-                    except ValueError: pass
+                if i == 0:
+                    continue
+                try:
+                    val = int(parts[i-1])
+                except ValueError:
+                    continue
+                if part == "passed":
+                    result["passed"] = val
+                elif part == "failed":
+                    result["failed"] = val
+                elif part == "skipped":
+                    result["skipped"] = val
+                elif part == "error":
+                    result["failed"] += val
 
     result["total"] = result["passed"] + result["failed"] + result["skipped"]
 
@@ -155,18 +157,21 @@ def _parse_node_tests(result: dict, proc):
             parts = line.split(",")
             for part in parts:
                 part = part.strip()
+                words = part.split()
+                if len(words) < 1:
+                    continue
+                try:
+                    val = int(words[0])
+                except (ValueError, IndexError):
+                    continue
                 if "passed" in part:
-                    try: result["passed"] = int(part.split()[0])
-                    except (ValueError, IndexError): pass
+                    result["passed"] = val
                 elif "failed" in part:
-                    try: result["failed"] = int(part.split()[0])
-                    except (ValueError, IndexError): pass
+                    result["failed"] = val
                 elif "skipped" in part or "pending" in part:
-                    try: result["skipped"] = int(part.split()[0])
-                    except (ValueError, IndexError): pass
+                    result["skipped"] = val
                 elif "total" in part:
-                    try: result["total"] = int(part.split()[0])
-                    except (ValueError, IndexError): pass
+                    result["total"] = val
 
     if result["total"] == 0:
         result["total"] = result["passed"] + result["failed"] + result["skipped"]

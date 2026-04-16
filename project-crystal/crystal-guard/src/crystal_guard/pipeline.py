@@ -9,7 +9,7 @@ Different strictness at each stage:
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from crystal_guard.config import get_crystal_dir, walk_project_files, CODE_EXTENSIONS, is_test_file
+from crystal_guard.config import get_crystal_dir, walk_project_files, is_test_file
 from crystal_guard.analyzers import Issue
 import re
 
@@ -107,7 +107,6 @@ def get_staging_issues(project_path: str) -> list[Issue]:
 
 def get_production_issues(project_path: str, test_results: dict = None) -> list[Issue]:
     """Extra checks that only apply at production stage."""
-    root = Path(project_path).resolve()
     issues = []
 
     # prod-001: All tests must pass

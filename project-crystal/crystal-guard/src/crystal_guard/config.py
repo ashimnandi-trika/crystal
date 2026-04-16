@@ -105,13 +105,34 @@ def save_config(config: CrystalConfig, project_path: str = "."):
         yaml.dump(data, f, default_flow_style=False, sort_keys=False)
 
 
-def is_ignored(path: Path, project_root: Path) -> bool:
-    parts = path.relative_to(project_root).parts
-    for part in parts:
+def is_ignored(path: Path, project_root: Path, ignore_patterns: list = None) -> bool:
+    """Check if a path should be ignored during scanning."""
+    try:
+        rel = path.relative_to(project_root)
+    except ValueError:
+        return False
+
+    # Check hardcoded ignore dirs
+    for part in rel.parts:
         if part in IGNORE_DIRS:
             return True
+
+    # Check file extensions
     if path.suffix in IGNORE_EXTENSIONS:
         return True
+
+    # Check config ignore patterns
+    if ignore_patterns:
+        rel_str = str(rel)
+        for pattern in ignore_patterns:
+            pattern_clean = pattern.rstrip("/**").rstrip("/*")
+            if rel_str.startswith(pattern_clean):
+                return True
+            # Also try fnmatch
+            from fnmatch import fnmatch
+            if fnmatch(rel_str, pattern):
+                return True
+
     return False
 
 
@@ -140,7 +161,6 @@ def is_test_file(path: Path, project_root: Path = None) -> bool:
         rel = name
 
     name_patterns = {"test_", "_test.", ".test.", ".spec.", "conftest"}
-    dir_patterns = {"tests/", "test/", "__tests__/"}
 
     for p in name_patterns:
         if p in name:

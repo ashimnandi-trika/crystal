@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 from fastmcp import FastMCP
 
-from crystal_guard.config import load_config, get_crystal_dir, walk_project_files, CODE_EXTENSIONS, is_test_file
+from crystal_guard.config import load_config, get_crystal_dir
 from crystal_guard.detector import detect_stack
 from crystal_guard.analyzers import architecture, domain, security, placeholders
 from crystal_guard.scoring import calculate_health
@@ -158,15 +158,12 @@ def validate_file_placement(file_path: str, purpose: str, project_path: str = ""
         purpose: What the file does (e.g., 'database helper functions')
         project_path: Project root (optional, uses current directory)
     """
-    path = project_path or get_project_path()
-    config = load_config(path)
-
     file_lower = file_path.lower()
     purpose_lower = purpose.lower()
     warnings = []
 
     # Check if database code is going to frontend
-    if ("frontend" in file_lower or "src/" in file_lower) and not "backend" in file_lower:
+    if ("frontend" in file_lower or "src/" in file_lower) and "backend" not in file_lower:
         db_words = ["database", "mongo", "sql", "query", "collection", "model", "schema"]
         if any(w in purpose_lower for w in db_words):
             warnings.append(
