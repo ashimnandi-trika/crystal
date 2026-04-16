@@ -1,0 +1,82 @@
+[
+  {
+    "timestamp": "2026-04-16T08:39:49.320338+00:00",
+    "file_count": 4,
+    "test_file_count": 4,
+    "total_lines": 28,
+    "endpoint_count": 0,
+    "health_score": 65,
+    "grade": "C",
+    "violation_count": 5,
+    "violations": {
+      "critical": 1,
+      "high": 2,
+      "medium": 0,
+      "low": 2
+    }
+  },
+  {
+    "timestamp": "2026-04-16T08:40:57.241537+00:00",
+    "file_count": 4,
+    "test_file_count": 0,
+    "total_lines": 28,
+    "endpoint_count": 2,
+    "health_score": 0,
+    "grade": "F",
+    "violation_count": 18,
+    "violations": {
+      "critical": 7,
+      "high": 3,
+      "medium": 2,
+      "low": 6
+    }
+  },
+  {
+    "timestamp": "2026-04-16T08:41:03.983851+00:00",
+    "file_count": 4,
+    "test_file_count": 0,
+    "total_lines": 28,
+    "endpoint_count": 2,
+    "health_score": 0,
+    "grade": "F",
+    "violation_count": 18,
+    "violations": {
+      "critical": 7,
+      "high": 3,
+      "medium": 2,
+      "low": 6
+    }
+  },
+  {
+    "timestamp": "2026-04-16T08:44:28.504472+00:00",
+    "file_count": 4,
+    "test_file_count": 0,
+    "total_lines": 28,
+    "endpoint_count": 2,
+    "health_score": 0,
+    "grade": "F",
+    "violation_count": 18,
+    "violations": {
+      "critical": 7,
+      "high": 3,
+      "medium": 2,
+      "low": 6
+    }
+  },
+  {
+    "timestamp": "2026-04-16T08:44:28.761323+00:00",
+    "file_count": 4,
+    "test_file_count": 0,
+    "total_lines": 28,
+    "endpoint_count": 2,
+    "health_score": 0,
+    "grade": "F",
+    "violation_count": 18,
+    "violations": {
+      "critical": 7,
+      "high": 3,
+      "medium": 2,
+      "low": 6
+    }
+  }
+]

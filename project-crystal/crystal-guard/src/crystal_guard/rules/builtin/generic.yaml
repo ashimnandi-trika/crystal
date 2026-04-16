@@ -1,0 +1,44 @@
+meta:
+  name: "Generic"
+  stack_id: "generic"
+  description: "Basic rules for any project"
+  version: "1.0.0"
+
+architecture:
+  shared:
+    required_files:
+      - ".gitignore"
+    recommended_files:
+      - "README.md"
+    max_root_files: 15
+    max_depth: 7
+
+domain_purity: {}
+
+security:
+  global:
+    checks:
+      - id: "sec-001"
+        pattern: "(api_key|apiKey|API_KEY)\\s*[=:]\\s*[\"'][a-zA-Z0-9_\\-]{16,}"
+        message: "Hardcoded API key detected. Use environment variables."
+        severity: "critical"
+      - id: "sec-002"
+        pattern: "(password|passwd|pwd)\\s*[=:]\\s*[\"'][^\"']{4,}"
+        message: "Hardcoded password detected."
+        severity: "critical"
+      - id: "sec-003"
+        pattern: "sk-[a-zA-Z0-9]{20,}|pk_(test|live)_[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}"
+        message: "Known API key format found in code."
+        severity: "critical"
+
+placeholders:
+  global:
+    checks:
+      - id: "hyg-001"
+        pattern: "\\bTODO\\b|\\bFIXME\\b"
+        message: "Unresolved TODO/FIXME."
+        severity: "low"
+      - id: "hyg-002"
+        pattern: "example\\.com|lorem ipsum"
+        message: "Placeholder value detected."
+        severity: "medium"

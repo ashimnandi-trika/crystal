@@ -1,0 +1,17 @@
+project:
+  name: good_project
+  stack: react-fastapi-mongo
+checks:
+  architecture: true
+  domain_purity: true
+  security: true
+  placeholders: true
+severity_threshold: high
+ignore:
+  files:
+  - node_modules/**
+  - venv/**
+  - .git/**
+  - build/**
+  - dist/**
+  rules: []

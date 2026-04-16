@@ -1,0 +1,54 @@
+name: Crystal Quality Gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  crystal-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Crystal Guard
+        run: pip install crystal-guard
+
+      - name: Initialize Crystal
+        run: crystal init --ci .
+
+      - name: Run Quality Gates
+        run: crystal check --format json --output crystal-report.json .
+
+      - name: Generate Markdown Report
+        if: always()
+        run: crystal report --output crystal-report.md .
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('crystal-report.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+
+      - name: Check Pass/Fail
+        run: |
+          RESULT=$(python -c "import json; r=json.load(open('crystal-report.json')); print('PASS' if r['passed'] else 'FAIL')")
+          if [ "$RESULT" = "FAIL" ]; then
+            echo "::error::Crystal Guard quality gates failed. See report for details."
+            exit 1
+          fi

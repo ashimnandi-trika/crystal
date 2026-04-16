@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import { Server, Terminal, ShieldCheck, FolderTree, Layers, Lock, Package, BookOpen, GitBranch, ArrowRight, Check, Copy, ExternalLink, ChevronDown } from "lucide-react";
+import { Server, Terminal, ShieldCheck, FolderTree, Layers, Lock, Package, BookOpen, GitBranch, ArrowRight, Check, Copy, ExternalLink, ChevronDown, BarChart3, FileText, RefreshCw, Zap } from "lucide-react";
 
 const HERO_BG = "https://static.prod-images.emergentagent.com/jobs/3778f3fa-dbe3-475d-870a-0b138480ff3d/images/5562c81e28f7695995a13ea769adea0593fe6447e0c319030cb8381c3bf4fc80.png";
 
@@ -140,8 +140,11 @@ const Hero = () => (
             { type: "output", text: "Successfully installed crystal-guard-0.1.0" },
             { type: "command", text: "crystal init" },
             { type: "success", text: "Detected stack: React + Python + MongoDB" },
-            { type: "success", text: "Loaded 24 architecture rules" },
-            { type: "success", text: "Crystal Guard activated." },
+            { type: "success", text: "Loaded 15 quality gates" },
+            { type: "command", text: "crystal check" },
+            { type: "success", text: "15/15 gates passed | Health: A (100/100)" },
+            { type: "command", text: "crystal handoff --output handoff.md" },
+            { type: "success", text: "Session handoff generated. Paste into next AI session." },
           ]}
         />
       </div>
@@ -348,14 +351,15 @@ const QuickStartSection = () => (
   </section>
 );
 
-/* ─── Features Grid ─── */
+/* ─── Features Grid — The 7 Core Features ─── */
 const features = [
-  { icon: FolderTree, title: "Architecture Validation", description: "Validates file structure matches expected patterns for your stack. Catches misplaced files and missing directories." },
-  { icon: Layers, title: "Domain Purity", description: "Enforces separation of concerns. Frontend stays frontend. Backend stays backend. No database queries in React components." },
-  { icon: Lock, title: "Security Scanning", description: "Detects hardcoded API keys, passwords, SQL injection vectors, and common vulnerability patterns in AI-generated code." },
-  { icon: Package, title: "Dependency Audit", description: "Flags unnecessary, vulnerable, or outdated packages. AI adds dependencies liberally — Crystal keeps them in check." },
-  { icon: BookOpen, title: "Session Memory", description: "Maintains a PRD that tracks what's been built across coding sessions. No more re-explaining context to your AI assistant." },
-  { icon: GitBranch, title: "CI/CD Gates", description: "GitHub Actions workflow that blocks bad code from merging. One YAML file, zero configuration. Posts reports as PR comments." },
+  { icon: FileText, title: "Session Prompt Generator", description: "Reads your project automatically — git history, file count, test count — and writes a structured prompt. Paste it. The AI knows exactly where you left off." },
+  { icon: ShieldCheck, title: "15 Quality Gates", description: "Architecture, domain purity, security, dependencies, and hygiene checks. If any gate fails, you know exactly what broke and where. Nothing ships broken." },
+  { icon: BarChart3, title: "Baseline Tracking", description: "Tracks file count, test count, endpoints, and violations across sessions. If anything goes backwards, you see it immediately. Your project only moves forward." },
+  { icon: RefreshCw, title: "Session Handoff", description: "Generates a handoff document after every session. What was built, what changed, what gates passed. Context travels with you across platforms." },
+  { icon: Zap, title: "MCP Tools", description: "The AI assistant gets direct access to quality tools while it codes. It calls run_tests, check_purity, verify_gates in real time — not after the fact." },
+  { icon: FolderTree, title: "Architecture Rules", description: "An architecture.md that lives in your repo. Every AI tool reads it. Every fork carries it. Rules survive session resets and platform switches." },
+  { icon: Layers, title: "Technical Debt Tracker", description: "Logs every gate failure across sessions. Builds a picture of where debt is growing. You see the rot before it kills your project." },
 ];
 
 const FeaturesSection = () => (
@@ -364,8 +368,8 @@ const FeaturesSection = () => (
       <AnimatedSection>
         <p className="text-sm font-mono text-blue-400 tracking-wider uppercase mb-4">Features</p>
         <h2 className="text-3xl md:text-5xl tracking-tighter font-semibold text-white max-w-3xl">
-          Six layers of<br />
-          <span className="text-neutral-500">protection.</span>
+          Seven features.<br />
+          <span className="text-neutral-500">Zero broken deploys.</span>
         </h2>
       </AnimatedSection>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16">
@@ -438,11 +442,11 @@ const UseCasesSection = () => (
 /* ─── Commands Reference ─── */
 const commands = [
   { command: "crystal init", description: "Initialize Crystal in your project. Auto-detects stack and creates .crystal/ config.", flags: "--stack react-python-mongo" },
-  { command: "crystal check", description: "Run all analyzers and output health report.", flags: "--format json --severity critical" },
-  { command: "crystal status", description: "Quick health dashboard with score, grade, and issue counts.", flags: "" },
-  { command: "crystal fix", description: "Auto-fix simple issues like missing .gitignore entries.", flags: "--dry-run" },
+  { command: "crystal check", description: "Run all 15 quality gates and output health report.", flags: "--format json --severity critical" },
+  { command: "crystal handoff", description: "Generate session handoff prompt for your next AI coding session.", flags: "--output handoff.md --copy" },
+  { command: "crystal status", description: "Quick health dashboard with score, baseline comparison, and debt trend.", flags: "" },
+  { command: "crystal gates", description: "Show all 15 quality gates individually with pass/fail status.", flags: "" },
   { command: "crystal report", description: "Generate detailed markdown report for sharing or PR comments.", flags: "--output report.md" },
-  { command: "crystal mcp serve", description: "Start the MCP server for AI assistant integration.", flags: "--transport http --port 8080" },
 ];
 
 const CommandsSection = () => (

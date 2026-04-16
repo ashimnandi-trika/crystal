@@ -1,0 +1,128 @@
+meta:
+  name: "React + Python + MongoDB"
+  stack_id: "react-fastapi-mongo"
+  description: "Rules for full-stack apps with React frontend, Python/FastAPI backend, and MongoDB"
+  version: "1.0.0"
+
+architecture:
+  frontend:
+    root: "frontend/src"
+    expected_dirs:
+      - path: "components"
+        description: "Reusable UI components"
+        optional: true
+  backend:
+    root: "backend"
+    expected_dirs:
+      - path: "routes"
+        description: "API route handlers"
+        optional: true
+      - path: "services"
+        description: "Business logic"
+        optional: true
+      - path: "models"
+        description: "Data models and schemas"
+        optional: true
+  shared:
+    required_files:
+      - ".gitignore"
+    recommended_files:
+      - "README.md"
+      - "tests/"
+    max_root_files: 12
+    max_depth: 6
+
+domain_purity:
+  frontend:
+    file_patterns:
+      - "frontend/**/*.js"
+      - "frontend/**/*.jsx"
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "src/**/*.js"
+      - "src/**/*.jsx"
+    forbidden:
+      - id: "dom-001"
+        pattern: "pymongo|MongoClient|mongoose\\.connect|mongodb://"
+        message: "Database access detected in frontend code. Frontend should only communicate with backend via API calls."
+        suggestion: "Move database operations to a backend service file and create an API endpoint."
+        severity: "critical"
+      - id: "dom-002"
+        pattern: "import\\s+fs|require\\(['\"]fs['\"]\\)|from\\s+pathlib"
+        message: "Filesystem access detected in frontend code. Frontend cannot access the server's filesystem."
+        suggestion: "If you need file operations, create a backend API endpoint."
+        severity: "critical"
+      - id: "dom-003"
+        pattern: "process\\.env\\.(?!REACT_APP_|NEXT_PUBLIC_|VITE_)"
+        message: "Server-side environment variable in frontend. Only REACT_APP_ prefixed vars are available in browser."
+        suggestion: "Rename with REACT_APP_ prefix, or move this logic to the backend."
+        severity: "high"
+      - id: "dom-004"
+        pattern: "bcrypt|argon2|jwt\\.sign|jsonwebtoken"
+        message: "Authentication/cryptographic operations detected in frontend. These should run on the backend."
+        suggestion: "Move authentication logic to backend middleware or service."
+        severity: "high"
+
+security:
+  global:
+    file_patterns:
+      - "**/*.py"
+      - "**/*.js"
+      - "**/*.jsx"
+      - "**/*.ts"
+      - "**/*.tsx"
+    checks:
+      - id: "sec-001"
+        pattern: "(api_key|apiKey|API_KEY|api_secret|apiSecret)\\s*[=:]\\s*[\"'][a-zA-Z0-9_\\-]{16,}"
+        message: "Hardcoded API key detected. Use environment variables instead."
+        suggestion: "Move this key to your .env file."
+        severity: "critical"
+      - id: "sec-002"
+        pattern: "(password|passwd|pwd|secret)\\s*[=:]\\s*[\"'][^\"']{4,}"
+        message: "Hardcoded password detected. Passwords should never appear in code."
+        suggestion: "Use environment variables for secrets."
+        severity: "critical"
+        exclude_files:
+          - "*.test.*"
+          - "*.example*"
+      - id: "sec-003"
+        pattern: "sk-[a-zA-Z0-9]{20,}|pk_(test|live)_[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[0-9A-Z]{16}"
+        message: "Recognized API key format found in code."
+        suggestion: "Remove this key immediately, rotate it, and store in .env."
+        severity: "critical"
+      - id: "sec-005"
+        pattern: "allow_origins\\s*=\\s*\\[\\s*[\"']\\*[\"']"
+        message: "CORS wildcard (*) allows any website to call your API."
+        suggestion: "Set specific allowed origins."
+        severity: "high"
+
+placeholders:
+  global:
+    checks:
+      - id: "hyg-001"
+        pattern: "\\bTODO\\b|\\bFIXME\\b|\\bHACK\\b|\\bXXX\\b"
+        message: "Unresolved TODO/FIXME comment. Complete or remove before deploying."
+        severity: "low"
+        exclude_files:
+          - "*.md"
+      - id: "hyg-002"
+        pattern: "example\\.com|test@test\\.com|lorem ipsum"
+        message: "Placeholder value detected. Replace with real values."
+        severity: "medium"
+        exclude_files:
+          - "*.md"
+          - "*.test.*"
+      - id: "hyg-003"
+        pattern: "console\\.log\\("
+        message: "Debug console.log found. Remove before deploying."
+        severity: "low"
+        exclude_files:
+          - "*.test.*"
+      - id: "hyg-004"
+        pattern: "localhost:\\d{4}"
+        message: "Hardcoded localhost URL. Use environment variables."
+        severity: "medium"
+        exclude_files:
+          - ".env"
+          - ".env.example"
+          - "*.md"
