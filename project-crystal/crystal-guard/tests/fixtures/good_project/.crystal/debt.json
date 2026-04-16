@@ -118,7 +118,82 @@
       "issue_count": 0,
       "issues_by_severity": {},
       "issue_ids": []
+    },
+    {
+      "timestamp": "2026-04-16T09:58:31.762265+00:00",
+      "health_score": 100,
+      "issue_count": 0,
+      "issues_by_severity": {},
+      "issue_ids": []
+    },
+    {
+      "timestamp": "2026-04-16T09:58:32.005263+00:00",
+      "health_score": 96,
+      "issue_count": 1,
+      "issues_by_severity": {
+        "medium": 1
+      },
+      "issue_ids": [
+        "stg-002"
+      ]
+    },
+    {
+      "timestamp": "2026-04-16T09:58:42.789966+00:00",
+      "health_score": 96,
+      "issue_count": 1,
+      "issues_by_severity": {
+        "medium": 1
+      },
+      "issue_ids": [
+        "stg-002"
+      ]
+    },
+    {
+      "timestamp": "2026-04-16T10:00:13.866043+00:00",
+      "health_score": 100,
+      "issue_count": 0,
+      "issues_by_severity": {},
+      "issue_ids": []
+    },
+    {
+      "timestamp": "2026-04-16T10:00:21.698318+00:00",
+      "health_score": 96,
+      "issue_count": 1,
+      "issues_by_severity": {
+        "medium": 1
+      },
+      "issue_ids": [
+        "stg-002"
+      ]
+    },
+    {
+      "timestamp": "2026-04-16T10:00:24.622929+00:00",
+      "health_score": 96,
+      "issue_count": 1,
+      "issues_by_severity": {
+        "medium": 1
+      },
+      "issue_ids": [
+        "stg-002"
+      ]
+    },
+    {
+      "timestamp": "2026-04-16T10:00:28.972789+00:00",
+      "health_score": 100,
+      "issue_count": 0,
+      "issues_by_severity": {},
+      "issue_ids": []
     }
   ],
-  "recurring": {}
+  "recurring": {
+    "stg-002:.env": {
+      "rule_id": "stg-002",
+      "file": ".env",
+      "message": "Environment variable REACT_APP_API_URL is used in code but not defined in any .env file.",
+      "severity": "medium",
+      "first_seen": "2026-04-16T09:58:32.005263+00:00",
+      "last_seen": "2026-04-16T10:00:24.622929+00:00",
+      "count": 4
+    }
+  }
 }

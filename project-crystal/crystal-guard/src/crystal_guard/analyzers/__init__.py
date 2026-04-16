@@ -28,6 +28,7 @@ class Issue:
     rule_id: str
     message: str
     suggestion: str
+    why: str = ""
 
     def to_dict(self) -> dict:
         return asdict(self)

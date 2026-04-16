@@ -130,16 +130,47 @@ def check(
     format: str = typer.Option("terminal", "--format", "-f", help="Output format: terminal, json, markdown"),
     severity: str = typer.Option("all", "--severity", help="Minimum severity to show: critical, high, medium, all"),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Write report to file"),
+    stage: str = typer.Option("local", "--stage", "-s", help="Pipeline stage: local, staging, production"),
 ):
-    """Run all quality gates and show health report."""
+    """Run quality gates and show health report.
+
+    Stages control strictness:
+    local (default) = lenient, staging = strict, production = zero tolerance.
+    """
+    from crystal_guard.pipeline import (
+        get_staging_issues, get_production_issues, STAGE_THRESHOLDS,
+        save_pipeline_state, check_stage_progression
+    )
+    from crystal_guard.test_runner import run_tests as exec_tests
+
     project_path = str(Path(path).resolve())
     config = load_config(project_path)
     rules = load_rules(project_path, config.stack)
 
-    console.print("[dim]Running quality gates...[/dim]\n")
+    # Check stage progression
+    if stage in ("staging", "production"):
+        block = check_stage_progression(project_path, stage)
+        if block:
+            console.print(f"[red]{block}[/red]")
+            raise typer.Exit(1)
 
+    stage_label = stage.upper()
+    console.print(f"[dim]Running {stage_label} quality gates...[/dim]\n")
+
+    # Core gates (always run)
     issues = run_all_analyzers(project_path, rules, config)
-    health = calculate_health(issues, config.severity_threshold)
+
+    # Stage-specific gates
+    if stage in ("staging", "production"):
+        issues.extend(get_staging_issues(project_path))
+
+    if stage == "production":
+        test_results = exec_tests(project_path)
+        issues.extend(get_production_issues(project_path, test_results))
+
+    # Apply stage threshold
+    threshold = STAGE_THRESHOLDS.get(stage, config.severity_threshold)
+    health = calculate_health(issues, threshold)
 
     # Filter by severity for display
     if severity != "all":
@@ -170,6 +201,11 @@ def check(
             "Security": sum(1 for i in issues if i.analyzer == "security"),
             "Code Hygiene": sum(1 for i in issues if i.analyzer == "placeholders"),
         }
+        if stage in ("staging", "production"):
+            gate_results["Staging"] = sum(1 for i in issues if i.analyzer == "staging")
+        if stage == "production":
+            gate_results["Tests"] = sum(1 for i in issues if i.analyzer == "production")
+
         print_gates(gate_results, console)
         print_health(health, console)
         if display_issues:
@@ -181,12 +217,14 @@ def check(
             Path(output).write_text(report)
             console.print(f"\n[dim]Report saved to {output}[/dim]")
 
-    # Update baseline and debt
+    # Update baseline, debt, pipeline
     snapshot = capture_baseline(project_path, health.score, health.grade, issues)
     save_baseline(project_path, snapshot)
     record_session_debt(project_path, issues, health.score)
+    save_pipeline_state(project_path, stage, health.passed, health.score, health.total_issues)
 
     if not health.passed:
+        console.print(f"\n[yellow]Tip: Run [cyan]crystal fix-prompt {path}[/cyan] to get paste-ready fix instructions.[/yellow]")
         raise typer.Exit(1)
 
 
@@ -412,6 +450,102 @@ def mcp_serve(
 
     from crystal_guard.mcp.server import run_server
     run_server(transport=transport, port=port)
+
+
+@app.command()
+def test(
+    path: str = typer.Argument(".", help="Project path"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show full test output"),
+):
+    """Run your project's actual tests (pytest, npm test, etc.).
+
+    Crystal doesn't just check if test files exist. It RUNS them
+    and reports which pass and which fail.
+    """
+    from crystal_guard.test_runner import run_tests as exec_tests
+
+    project_path = str(Path(path).resolve())
+    console.print("[dim]Running tests...[/dim]\n")
+
+    results = exec_tests(project_path)
+
+    if not results["runner"]:
+        console.print("[yellow]No test runner detected.[/yellow]")
+        console.print("[dim]Crystal looked for pytest (Python) and npm test / vitest (Node).[/dim]")
+        raise typer.Exit(1)
+
+    if not results["ran"]:
+        console.print(f"[red]Test runner ({results['runner']}) failed to start.[/red]")
+        if verbose:
+            console.print(f"\n[dim]{results['output']}[/dim]")
+        raise typer.Exit(1)
+
+    # Display results
+    color = "green" if results["failed"] == 0 else "red"
+    console.print(f"Runner: [bold]{results['runner']}[/bold]")
+    console.print(f"[{color}]Tests: {results['passed']}/{results['total']} passing ({results['pass_rate']}%)[/{color}]")
+
+    if results["failed"] > 0:
+        console.print(f"\n[red]Failed ({results['failed']}):[/red]")
+        for err in results["errors"][:10]:
+            console.print(f"  {err}")
+
+    if results["skipped"] > 0:
+        console.print(f"[dim]Skipped: {results['skipped']}[/dim]")
+
+    if verbose and results["output"]:
+        console.print(f"\n[dim]--- Full Output ---[/dim]")
+        console.print(results["output"][:3000])
+
+    if results["failed"] > 0:
+        raise typer.Exit(1)
+
+
+@app.command(name="fix-prompt")
+def fix_prompt(
+    path: str = typer.Argument(".", help="Project path"),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Write fix prompts to file"),
+    copy: bool = typer.Option(False, "--copy", "-c", help="Copy to clipboard"),
+):
+    """Generate paste-ready AI prompts to fix every issue.
+
+    When checks fail, this generates the EXACT prompt you paste into
+    your AI coding tool. It explains what's wrong, why it matters,
+    and how to fix it. Step by step.
+    """
+    from crystal_guard.fix_prompt import generate_all_fix_prompts
+
+    project_path = str(Path(path).resolve())
+    config = load_config(project_path)
+    rules = load_rules(project_path, config.stack)
+
+    console.print("[dim]Analyzing issues and generating fix prompts...[/dim]\n")
+
+    issues = run_all_analyzers(project_path, rules, config)
+
+    if not issues:
+        console.print("[green]No issues found. All quality gates passed.[/green]")
+        return
+
+    prompt_text = generate_all_fix_prompts(issues)
+
+    if output:
+        Path(output).write_text(prompt_text)
+        console.print(f"[green]Fix prompts saved to {output}[/green]")
+        console.print(f"[dim]Paste the contents into your AI coding tool.[/dim]")
+    elif copy:
+        try:
+            import pyperclip
+            pyperclip.copy(prompt_text)
+            console.print(f"[green]Fix prompts for {len(issues)} issues copied to clipboard.[/green]")
+            console.print("[dim]Paste into your AI coding tool.[/dim]")
+        except ImportError:
+            console.print("[yellow]pyperclip not installed. Printing instead.[/yellow]\n")
+            console.print(prompt_text)
+    else:
+        console.print(prompt_text)
+
+    console.print(f"\n[bold]{len(issues)} issues[/bold] — fix in order shown (most critical first).")
 
 
 if __name__ == "__main__":

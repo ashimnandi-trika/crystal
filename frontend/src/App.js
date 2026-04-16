@@ -122,7 +122,7 @@ const Hero = () => (
         data-testid="hero-subtitle"
         className="animate-fade-up delay-300 mt-7 text-[clamp(1.1rem,2.2vw,1.5rem)] text-neutral-500 font-normal tracking-tight leading-snug"
       >
-        Your AI coding buddy that protects <span className="text-blue-400">architecture integrity</span> and <span className="text-blue-400">domain purity</span>, from first commit to production.
+        Your AI coding buddy that protects <span className="text-blue-400">architecture integrity</span> and <span className="text-blue-400">domain purity</span>,<br />from first commit to production.
       </p>
 
       {/* CTAs */}
