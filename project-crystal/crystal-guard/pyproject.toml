@@ -37,3 +37,6 @@ Repository = "https://github.com/crystalguard/crystal-guard"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+crystal_guard = ["rules/builtin/*.yaml"]

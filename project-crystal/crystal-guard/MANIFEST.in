@@ -1,0 +1,3 @@
+recursive-include src/crystal_guard/rules/builtin *.yaml
+include LICENSE
+include README.md

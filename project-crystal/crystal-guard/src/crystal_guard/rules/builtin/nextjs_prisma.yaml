@@ -1,0 +1,76 @@
+meta:
+  name: "Next.js + Prisma"
+  stack_id: "nextjs-prisma-postgres"
+  description: "Rules for Next.js apps with Prisma ORM and PostgreSQL"
+  version: "1.0.0"
+
+architecture:
+  frontend:
+    root: "src"
+    expected_dirs:
+      - path: "app"
+        description: "Next.js App Router pages"
+        optional: true
+      - path: "components"
+        description: "Reusable UI components"
+        optional: true
+  backend:
+    root: "src"
+    expected_dirs:
+      - path: "lib"
+        description: "Utility and helper functions"
+        optional: true
+  shared:
+    required_files:
+      - ".gitignore"
+    recommended_files:
+      - "README.md"
+      - "prisma/schema.prisma"
+    max_root_files: 15
+    max_depth: 7
+
+domain_purity:
+  client_components:
+    file_patterns:
+      - "src/components/**/*.tsx"
+      - "src/components/**/*.jsx"
+      - "app/**/page.tsx"
+    forbidden:
+      - id: "dom-001"
+        pattern: "PrismaClient|prisma\\."
+        message: "Database access in client component. Use Server Components or API routes for database queries."
+        suggestion: "Move database calls to a Server Component or API route."
+        severity: "critical"
+      - id: "dom-002"
+        pattern: "import\\s+fs|require\\(['\"]fs['\"]\\)"
+        message: "Filesystem access in client component."
+        suggestion: "Use Server Components or API routes for file operations."
+        severity: "critical"
+
+security:
+  global:
+    checks:
+      - id: "sec-001"
+        pattern: "(api_key|apiKey|API_KEY)\\s*[=:]\\s*[\"'][a-zA-Z0-9_\\-]{16,}"
+        message: "Hardcoded API key detected."
+        severity: "critical"
+      - id: "sec-002"
+        pattern: "(password|passwd|pwd|secret)\\s*[=:]\\s*[\"'][^\"']{4,}"
+        message: "Hardcoded password detected."
+        severity: "critical"
+      - id: "sec-003"
+        pattern: "sk-[a-zA-Z0-9]{20,}|pk_(test|live)_[a-zA-Z0-9]{20,}"
+        message: "Known API key format found."
+        severity: "critical"
+
+placeholders:
+  global:
+    checks:
+      - id: "hyg-001"
+        pattern: "\\bTODO\\b|\\bFIXME\\b"
+        message: "Unresolved TODO/FIXME."
+        severity: "low"
+      - id: "hyg-002"
+        pattern: "example\\.com|lorem ipsum"
+        message: "Placeholder value detected."
+        severity: "medium"

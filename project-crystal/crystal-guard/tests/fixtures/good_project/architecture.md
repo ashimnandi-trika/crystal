@@ -5,11 +5,12 @@
 
 ## Tech Stack
 - **Stack**: react-fastapi-mongo
-- **Files**: 6 | **Tests**: 1
+- **Files**: 7 | **Tests**: 1
 
 ## Project Structure
 ```
   README.md
+  architecture.md
   backend/services
   frontend/src
   package.json

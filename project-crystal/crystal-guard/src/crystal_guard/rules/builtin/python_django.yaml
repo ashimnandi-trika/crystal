@@ -1,0 +1,76 @@
+meta:
+  name: "Python Django"
+  stack_id: "python-django"
+  description: "Rules for Django web applications"
+  version: "1.0.0"
+
+architecture:
+  backend:
+    root: "."
+    expected_dirs:
+      - path: "templates"
+        description: "Django templates"
+        optional: true
+      - path: "static"
+        description: "Static assets"
+        optional: true
+  shared:
+    required_files:
+      - ".gitignore"
+      - "manage.py"
+    recommended_files:
+      - "README.md"
+      - "requirements.txt"
+    max_root_files: 12
+    max_depth: 6
+
+domain_purity:
+  templates:
+    file_patterns:
+      - "templates/**/*.html"
+      - "**/templates/**/*.html"
+    forbidden:
+      - id: "dom-001"
+        pattern: "import\\s|from\\s.*import"
+        message: "Python imports in Django template. Templates should only contain HTML and template tags."
+        suggestion: "Move logic to views or template tags."
+        severity: "high"
+  views:
+    file_patterns:
+      - "**/views.py"
+      - "**/views/**/*.py"
+    forbidden:
+      - id: "dom-010"
+        pattern: "cursor\\.execute.*%s|raw\\("
+        message: "Raw SQL in views. Use Django ORM or model managers."
+        suggestion: "Use Model.objects.filter() instead of raw SQL."
+        severity: "medium"
+
+security:
+  global:
+    checks:
+      - id: "sec-001"
+        pattern: "(api_key|apiKey|API_KEY|SECRET_KEY)\\s*[=:]\\s*[\"'][a-zA-Z0-9_\\-]{16,}"
+        message: "Hardcoded secret/API key detected."
+        severity: "critical"
+      - id: "sec-002"
+        pattern: "(password|passwd|pwd)\\s*[=:]\\s*[\"'][^\"']{4,}"
+        message: "Hardcoded password detected."
+        severity: "critical"
+      - id: "sec-007"
+        pattern: "DEBUG\\s*=\\s*True"
+        message: "Django DEBUG is set to True. Disable in production."
+        suggestion: "Use environment variable: DEBUG = os.environ.get('DEBUG', 'False') == 'True'"
+        severity: "high"
+
+placeholders:
+  global:
+    checks:
+      - id: "hyg-001"
+        pattern: "\\bTODO\\b|\\bFIXME\\b"
+        message: "Unresolved TODO/FIXME."
+        severity: "low"
+      - id: "hyg-002"
+        pattern: "example\\.com|lorem ipsum"
+        message: "Placeholder value detected."
+        severity: "medium"

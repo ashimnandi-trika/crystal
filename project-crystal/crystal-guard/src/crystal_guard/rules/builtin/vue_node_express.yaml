@@ -1,0 +1,83 @@
+meta:
+  name: "Vue + Node/Express"
+  stack_id: "vue-node-express"
+  description: "Rules for Vue.js frontend with Node/Express backend"
+  version: "1.0.0"
+
+architecture:
+  frontend:
+    root: "src"
+    expected_dirs:
+      - path: "components"
+        description: "Vue components"
+        optional: true
+      - path: "views"
+        description: "Page-level views"
+        optional: true
+  backend:
+    root: "server"
+    expected_dirs:
+      - path: "routes"
+        description: "Express route handlers"
+        optional: true
+      - path: "controllers"
+        description: "Business logic"
+        optional: true
+  shared:
+    required_files:
+      - ".gitignore"
+    recommended_files:
+      - "README.md"
+    max_root_files: 12
+    max_depth: 6
+
+domain_purity:
+  frontend:
+    file_patterns:
+      - "src/**/*.vue"
+      - "src/**/*.js"
+      - "src/**/*.ts"
+    forbidden:
+      - id: "dom-001"
+        pattern: "mongoose|MongoClient|mongodb://"
+        message: "Database access in frontend Vue code. Use API calls instead."
+        suggestion: "Move database operations to backend route handlers."
+        severity: "critical"
+      - id: "dom-002"
+        pattern: "import\\s+fs|require\\(['\"]fs['\"]\\)"
+        message: "Filesystem access in frontend code."
+        suggestion: "Create a backend API endpoint for file operations."
+        severity: "critical"
+      - id: "dom-003"
+        pattern: "process\\.env\\.(?!VITE_|VUE_APP_)"
+        message: "Server-side env variable in frontend. Only VITE_ or VUE_APP_ prefixed variables work in browser."
+        suggestion: "Rename with VITE_ prefix or move to backend."
+        severity: "high"
+
+security:
+  global:
+    checks:
+      - id: "sec-001"
+        pattern: "(api_key|apiKey|API_KEY)\\s*[=:]\\s*[\"'][a-zA-Z0-9_\\-]{16,}"
+        message: "Hardcoded API key detected."
+        severity: "critical"
+      - id: "sec-002"
+        pattern: "(password|passwd|pwd|secret)\\s*[=:]\\s*[\"'][^\"']{4,}"
+        message: "Hardcoded password detected."
+        severity: "critical"
+      - id: "sec-003"
+        pattern: "sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}"
+        message: "Known API key format found."
+        severity: "critical"
+
+placeholders:
+  global:
+    checks:
+      - id: "hyg-001"
+        pattern: "\\bTODO\\b|\\bFIXME\\b"
+        message: "Unresolved TODO/FIXME."
+        severity: "low"
+      - id: "hyg-002"
+        pattern: "example\\.com|lorem ipsum"
+        message: "Placeholder value detected."
+        severity: "medium"
