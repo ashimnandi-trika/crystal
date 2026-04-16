@@ -60,7 +60,7 @@ const Nav = () => {
           <a href="#quick-start" data-testid="nav-docs-link" className="hidden md:inline text-[14px] text-neutral-400 hover:text-white transition-colors duration-200">Get Started</a>
           <a href="#commands" data-testid="nav-commands-link" className="hidden md:inline text-[14px] text-neutral-400 hover:text-white transition-colors duration-200">Commands</a>
           <a
-            href="https://github.com"
+            href="https://github.com/ashimnandi-trika/crystal"
             target="_blank"
             rel="noopener noreferrer"
             data-testid="nav-github-btn"
@@ -151,8 +151,8 @@ const Hero = () => (
       <div className="animate-fade-up delay-600 mt-20">
         <TerminalWindow
           lines={[
-            { t: "cmd", v: "pip install crystal-guard" },
-            { t: "out", v: "Installed crystal-guard-0.1.0" },
+            { t: "cmd", v: "pip install crystal-code" },
+            { t: "out", v: "Installed crystal-code-0.1.0" },
             { t: "cmd", v: "crystal init" },
             { t: "ok",  v: "Found: React + Python + MongoDB" },
             { t: "ok",  v: "15 quality checks loaded" },
@@ -338,10 +338,10 @@ const QuickStart = () => (
       <Reveal delay={150}>
         <TerminalWindow
           showCopy
-          copyText="pip install crystal-guard && crystal init && crystal check"
+          copyText="pip install crystal-code && crystal init && crystal check"
           lines={[
-            { t: "cmd", v: "pip install crystal-guard" },
-            { t: "out", v: "Installed crystal-guard-0.1.0" },
+            { t: "cmd", v: "pip install crystal-code" },
+            { t: "out", v: "Installed crystal-code-0.1.0" },
             { t: "cmd", v: "crystal init" },
             { t: "ok",  v: "Found: React + Python + MongoDB" },
             { t: "ok",  v: "Created .crystal/ config" },
@@ -533,7 +533,7 @@ const Footer = () => (
         </p>
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="https://github.com"
+            href="https://github.com/ashimnandi-trika/crystal"
             target="_blank"
             rel="noopener noreferrer"
             data-testid="footer-github-btn"

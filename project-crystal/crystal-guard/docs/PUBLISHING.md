@@ -26,9 +26,9 @@ EOF
 
 ## Publishing
 
-### From the crystal-guard directory:
+### From the crystal-code directory:
 ```bash
-cd /app/project-crystal/crystal-guard
+cd /app/project-crystal/crystal-code
 
 # 1. Clean previous builds
 rm -rf dist/ build/ *.egg-info src/*.egg-info
@@ -45,7 +45,7 @@ twine upload dist/*
 
 ### Verify it works:
 ```bash
-pip install crystal-guard
+pip install crystal-code
 crystal --help
 ```
 
@@ -55,7 +55,7 @@ crystal --help
 twine upload --repository testpypi dist/*
 
 # Install from test PyPI
-pip install --index-url https://test.pypi.org/simple/ crystal-guard
+pip install --index-url https://test.pypi.org/simple/ crystal-code
 ```
 
 ## Updating (future releases)

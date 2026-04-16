@@ -32,8 +32,8 @@ dev = ["pytest>=7.0", "ruff>=0.1.0"]
 crystal = "crystal_guard.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/crystalguard/crystal-code"
-Repository = "https://github.com/crystalguard/crystal-code"
+Homepage = "https://crystalcodes.dev"
+Repository = "https://github.com/ashimnandi-trika/crystal"
 
 [tool.setuptools.packages.find]
 where = ["src"]

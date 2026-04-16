@@ -28,7 +28,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Crystal
-        run: pip install crystal-guard
+        run: pip install crystal-code
 
       - name: Initialize Crystal
         run: crystal init --ci .

@@ -5,7 +5,7 @@
 MCP servers + CLI + CI/CD gates that keep AI-generated code structurally sound, secure, and maintainable.
 
 ```
-pip install crystal-guard
+pip install crystal-code
 crystal init
 crystal check
 ```
@@ -32,7 +32,7 @@ Crystal Guard solves this with **7 features**:
 
 ```bash
 # Install
-pip install crystal-guard
+pip install crystal-code
 
 # Initialize (auto-detects your stack)
 crystal init
@@ -139,7 +139,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install crystal-guard
+      - run: pip install crystal-code
       - run: crystal init --ci
       - run: crystal check --format json --output crystal-report.json
       - run: crystal report --output crystal-report.md
