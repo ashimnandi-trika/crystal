@@ -117,12 +117,12 @@ const Hero = () => (
         Clean code that ships.
       </p>
 
-      {/* Line 3: One clean line — proportionate, grey, understated */}
+      {/* Line 3: One clean line — grey with blue accents on key words */}
       <p
         data-testid="hero-subtitle"
         className="animate-fade-up delay-300 mt-7 text-[clamp(1.1rem,2.2vw,1.5rem)] text-neutral-500 font-normal tracking-tight leading-snug"
       >
-        Architecture integrity. Domain purity. Your AI coding buddy.
+        Protects <span className="text-blue-400">architecture integrity</span> and <span className="text-blue-400">domain purity</span> so your code <span className="text-blue-400">ships</span> clean.
       </p>
 
       {/* CTAs */}
