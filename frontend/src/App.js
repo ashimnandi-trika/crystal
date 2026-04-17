@@ -117,45 +117,97 @@ const Hero = () => (
         Clean code that ships.
       </p>
 
-      {/* Line 3: One clean line — grey with blue accents on key words */}
+      {/* Line 3: The new user-approved subheadline */}
       <p
         data-testid="hero-subtitle"
-        className="animate-fade-up delay-300 mt-7 text-[clamp(1.1rem,2.2vw,1.5rem)] text-neutral-500 font-normal tracking-tight leading-snug"
+        className="animate-fade-up delay-300 mt-6 text-[clamp(1.05rem,2vw,1.35rem)] text-neutral-400 font-normal tracking-tight leading-snug max-w-2xl mx-auto"
       >
-        Your AI coding buddy that protects <span className="text-blue-400">architecture integrity</span> and <span className="text-blue-400">domain purity</span>,<br />from first commit to production.
+        The architecture guardian for <span className="text-blue-400">vibe-coded projects</span>.
       </p>
 
-      {/* CTAs */}
-      <div className="animate-fade-up delay-400 mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a
-          href="#quick-start"
-          data-testid="hero-get-started-btn"
-          className="inline-flex items-center gap-2.5 rounded-lg bg-white px-8 py-4 text-[15px] font-semibold text-black hover:bg-neutral-100 transition-all duration-200 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+      {/* Install block — copyable, prominent */}
+      <div
+        data-testid="hero-install"
+        className="animate-fade-up delay-400 mt-10 inline-flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-5 py-3.5 font-mono text-[15px] text-white mx-auto hover:bg-white/[0.06] transition-colors"
+      >
+        <span className="text-neutral-600 select-none">$</span>
+        <span>pip install crystal-code</span>
+        <button
+          type="button"
+          onClick={() => {
+            const el = document.createElement("textarea");
+            el.value = "pip install crystal-code";
+            document.body.appendChild(el);
+            el.select();
+            try { document.execCommand("copy"); } catch (e) { /* ignore */ }
+            document.body.removeChild(el);
+            if (navigator.clipboard) navigator.clipboard.writeText("pip install crystal-code").catch(() => {});
+            const btn = document.querySelector('[data-testid="hero-install-copy"]');
+            if (btn) {
+              btn.dataset.copied = "1";
+              setTimeout(() => { btn.dataset.copied = ""; }, 1500);
+            }
+          }}
+          data-testid="hero-install-copy"
+          className="ml-2 p-1.5 rounded hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
+          aria-label="Copy install command"
         >
-          Get Started
-          <ArrowRight size={18} />
-        </a>
+          <Copy size={15} />
+        </button>
+      </div>
+
+      {/* CTAs */}
+      <div className="animate-fade-up delay-500 mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
         <a
           href="https://github.com/ashimnandi-trika/crystal"
           target="_blank"
           rel="noopener noreferrer"
           data-testid="hero-github-btn"
-          className="inline-flex items-center gap-2.5 rounded-lg border border-white/15 bg-white/[0.03] px-8 py-4 text-[15px] font-medium text-white hover:bg-white/[0.08] transition-all duration-200"
+          className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-[14px] font-semibold text-black hover:bg-neutral-100 transition-all duration-200"
         >
-          <GitBranch size={17} />
-          View on GitHub
+          <GitBranch size={16} />
+          GitHub
+        </a>
+        <a
+          href="/crystal-case-study.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-testid="hero-case-study-btn"
+          className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.03] px-6 py-3 text-[14px] font-medium text-white hover:bg-white/[0.08] transition-all duration-200"
+        >
+          See the case study
+          <ArrowRight size={15} />
         </a>
       </div>
 
+      {/* 3 quick bullets above the fold */}
+      <div
+        data-testid="hero-bullets"
+        className="animate-fade-up delay-600 mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left"
+      >
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.015] p-4">
+          <p className="text-[13px] font-mono text-blue-400 mb-1.5">session handoff</p>
+          <p className="text-[13px] text-neutral-400 leading-snug">One paste. Your next AI chat knows everything the last one did.</p>
+        </div>
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.015] p-4">
+          <p className="text-[13px] font-mono text-blue-400 mb-1.5">20 quality gates</p>
+          <p className="text-[13px] text-neutral-400 leading-snug">Security, architecture, domain purity, hygiene, deps — in plain English.</p>
+        </div>
+        <div className="rounded-lg border border-white/[0.06] bg-white/[0.015] p-4">
+          <p className="text-[13px] font-mono text-blue-400 mb-1.5">MCP-native</p>
+          <p className="text-[13px] text-neutral-400 leading-snug">Works with Cursor, Claude Desktop, Windsurf — real-time checks.</p>
+        </div>
+      </div>
+
       {/* Terminal preview */}
-      <div className="animate-fade-up delay-600 mt-20">
+      <div className="animate-fade-up delay-700 mt-20">
         <TerminalWindow
           lines={[
             { t: "cmd", v: "pip install crystal-code" },
             { t: "out", v: "Installed crystal-code-0.3.0" },
             { t: "cmd", v: "crystal init" },
             { t: "ok",  v: "Found: React + Python + MongoDB" },
-            { t: "ok",  v: "16 quality gates + dependency audit loaded" },
+            { t: "ok",  v: "20 quality gates loaded" },
             { t: "cmd", v: "crystal check" },
             { t: "ok",  v: "All gates passed  |  Health: A (100/100)" },
             { t: "cmd", v: "crystal handoff" },
@@ -357,7 +409,7 @@ const QuickStart = () => (
             { t: "cmd", v: "crystal init" },
             { t: "ok",  v: "Found: React + Python + MongoDB" },
             { t: "ok",  v: "Created .crystal/ config" },
-            { t: "ok",  v: "16 quality gates + dependency audit loaded" },
+            { t: "ok",  v: "20 quality gates loaded" },
             { t: "cmd", v: "crystal check" },
             { t: "out", v: "" },
             { t: "ok",  v: "Architecture     PASS" },
@@ -381,7 +433,7 @@ const QuickStart = () => (
    ═══════════════════════════════════════════════════ */
 const features = [
   { icon: FileText, title: "Picks Up Where You Left Off", body: "Every time you start a new AI chat, you lose context. Crystal reads your project and writes a summary. Paste it in. Your AI knows exactly what happened before." },
-  { icon: ShieldCheck, title: "16+ Automatic Gates", body: "Is your password hardcoded? Database code in the frontend? Missing tests? Vulnerable dependencies? Crystal runs 16+ gates across architecture, security, domain purity, hygiene, and deps. In plain English." },
+  { icon: ShieldCheck, title: "20 Automatic Gates", body: "Is your password hardcoded? Database code in the frontend? Missing tests? Vulnerable dependencies? Crystal runs 20 gates across architecture, security, domain purity, hygiene, and deps. In plain English." },
   { icon: Sparkles, title: "AI-Powered Audit", body: "Run crystal audit and Crystal correlates issues across analyzers, finds hotspots, and emits a recommendation report. Add --llm for a natural-language senior-engineer review using Claude or GPT." },
   { icon: PackageCheck, title: "Dependency Health", body: "Crystal runs pip-audit and npm-audit, flags unused packages, and catches duplicate libraries (axios + node-fetch, moment + dayjs). Kills dependency bloat before it ships." },
   { icon: Wand2, title: "Safe Auto-Fixes", body: "crystal fix applies idempotent, whitelisted fixes (create .gitignore, add .env line, scaffold tests/) and never touches your source code. Dry-run by default; --apply to commit changes." },

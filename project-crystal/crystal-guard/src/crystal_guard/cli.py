@@ -370,34 +370,45 @@ def handoff(
 def gates(
     path: str = typer.Argument(".", help="Project path"),
 ):
-    """Show all 15 quality gates and their status."""
+    """Show all 20 quality gates and their status."""
     project_path = str(Path(path).resolve())
     config = load_config(project_path)
     rules = load_rules(project_path, config.stack)
 
     issues = run_all_analyzers(project_path, rules, config)
+    # Include stage-specific gates too
+    from crystal_guard.pipeline import get_staging_issues
+    try:
+        issues = issues + get_staging_issues(project_path)
+    except Exception:
+        pass
 
     gate_definitions = [
-        ("Gate 1", "arch-001", "Expected directories exist"),
-        ("Gate 2", "arch-002", "Required files present"),
-        ("Gate 3", "arch-004", "No root file sprawl"),
-        ("Gate 4", "arch-005", "No deep nesting"),
-        ("Gate 5", "dom-001", "No DB access in frontend"),
-        ("Gate 6", "dom-002", "No filesystem access in frontend"),
-        ("Gate 7", "dom-003", "Correct env var usage"),
-        ("Gate 8", "sec-001", "No hardcoded API keys"),
-        ("Gate 9", "sec-002", "No hardcoded passwords"),
+        ("Gate 1",  "arch-001", "Expected directories exist"),
+        ("Gate 2",  "arch-002", "Required files present"),
+        ("Gate 3",  "arch-004", "No root file sprawl"),
+        ("Gate 4",  "arch-005", "No deep nesting"),
+        ("Gate 5",  "dom-001", "No DB access in frontend"),
+        ("Gate 6",  "dom-002", "No filesystem access in frontend"),
+        ("Gate 7",  "dom-003", "Correct env var usage"),
+        ("Gate 8",  "sec-001", "No hardcoded API keys"),
+        ("Gate 9",  "sec-002", "No hardcoded passwords"),
         ("Gate 10", "sec-003", "No known key formats"),
         ("Gate 11", "sec-004", ".env in .gitignore"),
         ("Gate 12", "hyg-001", "No TODO/FIXME"),
         ("Gate 13", "hyg-002", "No placeholder values"),
         ("Gate 14", "hyg-003", "No debug logging"),
         ("Gate 15", "hyg-004", "No hardcoded localhost"),
+        ("Gate 16", "dep-001", "No vulnerable dependencies (pip-audit / npm-audit)"),
+        ("Gate 17", "dep-003", "No unused dependencies"),
+        ("Gate 18", "dep-004", "No duplicate-functionality packages"),
+        ("Gate 19", "stg-001", "No localhost URLs (staging+)"),
+        ("Gate 20", "stg-002", "All env vars defined (staging+)"),
     ]
 
     issue_rules = {i.rule_id for i in issues}
 
-    console.print("\n[bold]CRYSTAL GUARD — 15 QUALITY GATES[/bold]\n")
+    console.print("\n[bold]CRYSTAL — 20 QUALITY GATES[/bold]\n")
     passed = 0
     for gate_name, rule_id, desc in gate_definitions:
         if rule_id in issue_rules:
@@ -407,7 +418,7 @@ def gates(
             console.print(f"  [green]PASS[/green]  {gate_name}: {desc}")
             passed += 1
 
-    console.print(f"\n[bold]{passed}/15 gates passed[/bold]")
+    console.print(f"\n[bold]{passed}/20 gates passed[/bold]")
 
     # Also check architecture bonus gates
     arch_bonus = [i for i in issues if i.rule_id in ("arch-006", "arch-007", "arch-003")]

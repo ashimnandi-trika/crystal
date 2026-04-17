@@ -39,7 +39,7 @@ crystal check
 | # | Feature | What it does |
 |---|---------|-------------|
 | 1 | **Session Handoff** | Reads your project and generates a prompt for your next AI session. Paste it in. The AI knows where you left off. |
-| 2 | **15 Quality Gates** | Checks architecture, security, domain purity, and code hygiene. Tells you exactly what's wrong and how to fix it. |
+| 2 | **20 Quality Gates** | Checks architecture, security, domain purity, hygiene, and dependencies. Tells you exactly what's wrong and how to fix it. |
 | 3 | **Fix Prompts** | When checks fail, generates a paste-ready prompt with what's wrong, why it matters, and step-by-step fix instructions. |
 | 4 | **Stage Pipeline** | Different strictness for local, staging, and production. Gets stricter as you get closer to real users. |
 | 5 | **Test Runner** | Actually runs your tests (pytest, npm test). Not just checks if test files exist. |
@@ -64,7 +64,7 @@ pip install crystal-code
 crystal init
 ```
 
-### Run all 15 quality gates
+### Run all 20 quality gates
 
 ```bash
 crystal check
@@ -81,21 +81,29 @@ You'll see a health score from A to F. Red items need fixing. Green means you're
 | Command | What it does |
 |---------|-------------|
 | `crystal init` | Set up Crystal for your project. Auto-detects your stack. |
-| `crystal check` | Run all 15 quality gates. See your health score (A to F). |
+| `crystal check` | Run all 20 quality gates. See your health score (A to F). |
 | `crystal check --stage staging` | Stricter checks for staging (no localhost, env vars validated). |
 | `crystal check --stage production` | Zero tolerance. All tests must pass. No TODOs. No debug logs. |
+| `crystal audit [--llm]` | Deep audit with hotspot correlation. `--llm` adds senior-engineer review. |
 | `crystal test` | Run your actual tests (pytest, npm test). Report pass/fail. |
+| `crystal fix` | Safe, whitelisted auto-fixes. Never modifies source code. |
 | `crystal fix-prompt` | Generate paste-ready AI prompts to fix every issue found. |
+| `crystal diff` | Check only files changed since the last git commit. |
 | `crystal handoff` | Generate a session handoff prompt for your next AI coding session. |
+| `crystal completeness` | Compare your PRD checklist with what's actually built. |
 | `crystal status` | Quick health dashboard with score, trends, and changes. |
-| `crystal gates` | Show all 15 gates individually with pass/fail. |
+| `crystal gates` | Show all 20 gates individually with pass/fail. |
 | `crystal architect` | Generate architecture.md with your project rules. |
 | `crystal report` | Generate a detailed markdown report for sharing or PRs. |
+| `crystal badge` | Generate a shields.io-compatible Crystal health badge. |
+| `crystal rules list \| add \| remove` | Manage architecture rules from the CLI. |
 | `crystal mcp serve` | Start the MCP server so your AI tool gets real-time quality checks. |
+
+16 top-level commands. Run `crystal --help` for the full tree.
 
 ---
 
-## The 15 Quality Gates
+## The 20 Quality Gates
 
 | Gate | What it checks | Why it matters |
 |------|---------------|----------------|
@@ -114,6 +122,11 @@ You'll see a health score from A to F. Red items need fixing. Green means you're
 | 13 | No placeholder values | So users don't see example.com in your app |
 | 14 | No debug logging | So console.log doesn't leak data in production |
 | 15 | No hardcoded localhost | Because localhost breaks when you deploy |
+| 16 | No vulnerable dependencies | pip-audit / npm-audit integration — catches CVEs |
+| 17 | No unused dependencies | Cuts install time and attack surface |
+| 18 | No duplicate-functionality packages | Catches axios + node-fetch, moment + dayjs, etc. |
+| 19 | No localhost URLs (staging+) | Because localhost doesn't resolve on real servers |
+| 20 | All env vars defined (staging+) | So your app doesn't crash on deploy |
 
 ---
 

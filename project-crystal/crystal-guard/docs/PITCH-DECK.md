@@ -110,7 +110,7 @@ Team-product fit. Be specific about YOUR pain. Mention Emergent naturally — ju
 
 <span class="kicker">DEMO — LIVE TERMINAL</span>
 
-# One install. Sixteen commands.
+# One install. Twenty gates. Sixteen commands.
 
 ```bash
 $ pip install crystal-code
@@ -118,7 +118,7 @@ $ pip install crystal-code
 
 $ crystal init
   Found: React + Python + MongoDB
-  16 quality gates + dependency audit loaded
+  20 quality gates loaded (architecture, domain, security, hygiene, dependencies)
 ```
 
 *Switch to terminal. Open a real broken repo from your dashboard.*
@@ -259,9 +259,8 @@ If you have 5s, invite one judge question.
 
 ## Architecture
 
-- **5 analyzers**: architecture, domain purity, security, hygiene, dependencies
+- **16** commands · **20** quality gates across **5** analyzers
 - **Stage pipeline**: `local` (lenient) → `staging` (strict) → `production` (zero tolerance)
-- **16+ gates, rule-based** — no LLM required for core scoring
 - **Optional LLM layer**: Anthropic / OpenAI / Emergent universal key
 - **MCP server**: 8 tools, 3 resources, 2 prompts via FastMCP
 - **Per-rule auto-fixers**: idempotent, whitelisted, never touches source code

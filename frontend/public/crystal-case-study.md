@@ -116,17 +116,18 @@ pip install crystal-code
 | `crystal rules` | Manage architecture rules from CLI. |
 | `crystal mcp serve` | Runs the MCP server for Cursor / Claude / Windsurf. |
 
-### The 16+ quality gates
+### The 20 quality gates
 
 **Architecture (4)** — expected directories exist, required files present,
 config sprawl, deep nesting
 **Domain purity (3)** — frontend purity, backend purity, cross-layer env vars
-**Security (5+)** — hardcoded keys, passwords, recognized key formats
-(Stripe/OpenAI/GitHub/AWS), CORS wildcard, .env leak detection, SQL injection
+**Security (4)** — hardcoded keys, passwords, recognized key formats
+(Stripe/OpenAI/GitHub/AWS), .env-in-.gitignore
 **Code hygiene (4)** — TODO/FIXME, placeholders (example.com), debug
 logging, hardcoded localhost
-**Dependencies (4)** — pip-audit / npm-audit vulnerabilities, unused
-packages, duplicate functionality (axios + node-fetch), license compatibility
+**Dependencies (3)** — pip-audit / npm-audit vulnerabilities, unused
+packages, duplicate functionality (axios + node-fetch)
+**Stage-specific (2)** — no localhost URLs (staging+), all env vars defined (staging+)
 
 ### Architecture of Crystal itself
 ```
