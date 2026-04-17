@@ -651,43 +651,58 @@ def fix(
     path: str = typer.Argument(".", help="Project path"),
     dry_run: bool = typer.Option(True, "--dry-run/--apply", help="Show what would change without changing it"),
 ):
-    """Auto-fix simple issues (LOW/MEDIUM only).
+    """Auto-fix simple issues with safe filesystem/config operations.
 
-    Only fixes safe, high-confidence issues like adding .env to .gitignore
-    or creating missing directories. Never touches CRITICAL or HIGH.
+    Only fixes whitelisted rules whose fix is 100% safe (add .env to .gitignore,
+    create missing directories, scaffold README). Never modifies source code.
+    Run with --dry-run (default) to preview, --apply to make changes.
     """
+    from crystal_guard.fixers import AUTO_FIXERS
+
     project_path = str(Path(path).resolve())
     root = Path(project_path)
     config = load_config(project_path)
     rules = load_rules(project_path, config.stack)
     issues = run_all_analyzers(project_path, rules, config)
 
-    fixable = [i for i in issues if i.severity in ("low", "medium")]
+    # A rule is auto-fixable if it's in the AUTO_FIXERS whitelist (safe ops only).
+    # Severity is irrelevant — adding .env to .gitignore is always safe, even
+    # when the underlying issue is critical.
+    fixable = [i for i in issues if i.rule_id in AUTO_FIXERS]
     if not fixable:
         console.print("[green]No auto-fixable issues found.[/green]")
         return
 
+    # Dedupe by (rule_id, target) so we don't "fix" the same thing twice
+    seen = set()
     fixed = 0
+    skipped = 0
     for issue in fixable:
-        if issue.rule_id == "arch-006" and ".env" not in (root / ".gitignore").read_text() if (root / ".gitignore").exists() else True:
-            if dry_run:
-                console.print(f"  [dim]WOULD FIX[/dim] {issue.rule_id}: Add .env to .gitignore")
-            else:
-                with open(root / ".gitignore", "a") as f:
-                    f.write("\n.env\n")
-                console.print(f"  [green]FIXED[/green] {issue.rule_id}: Added .env to .gitignore")
-            fixed += 1
-        elif issue.rule_id == "arch-001":
-            dir_path = root / issue.file
-            if dry_run:
-                console.print(f"  [dim]WOULD FIX[/dim] {issue.rule_id}: Create directory {issue.file}")
-            else:
-                dir_path.mkdir(parents=True, exist_ok=True)
-                console.print(f"  [green]FIXED[/green] {issue.rule_id}: Created {issue.file}")
-            fixed += 1
+        fixer = AUTO_FIXERS[issue.rule_id]
+        key = (issue.rule_id, fixer.target_key(root, issue))
+        if key in seen:
+            continue
+        seen.add(key)
 
+        if fixer.already_done(root, issue):
+            skipped += 1
+            continue
+
+        description = fixer.describe(issue)
+        if dry_run:
+            console.print(f"  [dim]WOULD FIX[/dim] {issue.rule_id}: {description}")
+        else:
+            try:
+                fixer.apply(root, issue)
+                console.print(f"  [green]FIXED[/green] {issue.rule_id}: {description}")
+            except OSError as e:
+                console.print(f"  [red]FAILED[/red] {issue.rule_id}: {e}")
+                continue
+        fixed += 1
+
+    remaining = len(issues) - fixed - skipped
     mode = "Would fix" if dry_run else "Fixed"
-    console.print(f"\n{mode} {fixed} issues. {len(fixable) - fixed} require manual attention.")
+    console.print(f"\n{mode} {fixed} issues. {remaining} require manual attention.")
     if dry_run and fixed > 0:
         console.print("[dim]Run with --apply to make changes.[/dim]")
 
@@ -777,6 +792,49 @@ def completeness(
     project_path = str(Path(path).resolve())
     agent = CrystalAgent(project_path, use_llm=False)
     console.print(agent.completeness())
+
+
+@app.command()
+def badge(
+    path: str = typer.Argument(".", help="Project path"),
+    format: str = typer.Option("markdown", "--format", "-f", help="Output: markdown, svg, json, url"),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Write badge to file"),
+):
+    """Generate a shareable Crystal health badge for your README.
+
+    Produces a shields.io-compatible badge (A 95/100) linking back to
+    crystalcodes.dev. Formats: markdown (copy-paste), svg (self-hosted),
+    json (shields.io endpoint), url (shields.io static URL).
+    """
+    from crystal_guard.badge import (
+        build_spec, to_markdown, to_shields_json, to_shields_url, to_svg,
+    )
+
+    project_path = str(Path(path).resolve())
+    config = load_config(project_path)
+    rules = load_rules(project_path, config.stack)
+    issues = run_all_analyzers(project_path, rules, config)
+    health = calculate_health(issues, config.severity_threshold)
+    spec = build_spec(health.grade, health.score)
+
+    formatters = {
+        "markdown": to_markdown,
+        "svg": to_svg,
+        "json": to_shields_json,
+        "url": to_shields_url,
+    }
+    fmt = format.lower()
+    if fmt not in formatters:
+        console.print(f"[red]Unknown format: {format}. Use one of: {', '.join(formatters)}[/red]")
+        raise typer.Exit(1)
+
+    content = formatters[fmt](spec)
+    if output:
+        Path(output).write_text(content)
+        console.print(f"[green]Badge saved to {output}[/green]")
+    else:
+        # Use plain print (not console.print) so Rich doesn't wrap URLs/JSON
+        print(content)
 
 
 if __name__ == "__main__":

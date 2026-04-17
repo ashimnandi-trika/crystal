@@ -35,14 +35,17 @@
 ### v0.3.0 Features (DONE — Feb 2026)
 1. **Crystal Agent** (`agent.py`) — AI-powered audit, completeness, refactor. Optional LLM insight via `--llm` flag with priority: `ANTHROPIC_API_KEY` → `OPENAI_API_KEY` → `EMERGENT_LLM_KEY`.
 2. **Dependency Analyzer** — pip-audit, npm-audit, unused deps (`dep-003`), duplicate functionality detection (`dep-004`).
-3. **New CLI commands**: `diff`, `fix`, `audit`, `completeness`, `rules list/add/remove`.
+3. **New CLI commands**: `diff`, `fix`, `audit`, `completeness`, `badge`, `rules list/add/remove`.
 4. **Enhanced handoff** — session summary, test regression detection.
-5. **Critical bug fixes**:
+5. **Per-rule auto-fixers** (`fixers.py`) — idempotent, safe, whitelist-driven. `crystal fix` no longer suggests the same ".gitignore" patch for every issue.
+6. **Badge generator** (`badge.py`) — shields.io-compatible SVG/JSON/URL/markdown badge linking back to crystalcodes.dev. Use in READMEs: `crystal badge --format markdown`.
+7. **Critical bug fixes**:
    - Fixed inverted severity threshold logic in scoring.
    - Fixed pipeline.py docstring syntax error (blocked imports).
    - Fixed Jest/Vitest parser (was reading 0 failed when non-zero).
-6. **Comprehensive unit test suite** — 132 tests, 80% coverage.
-7. **Backend/frontend production hardening**: CORS restricted, pagination, health endpoint, clipboard fallback, async scripts, MongoDB error handling.
+   - Fixed crystal fix broken ternary (suggested .gitignore for every issue).
+8. **Comprehensive unit test suite** — 161 tests, 82% coverage.
+9. **Backend/frontend production hardening**: CORS restricted, pagination, health endpoint, clipboard fallback, async scripts, MongoDB error handling.
 
 ### Unit Test Suite (NEW)
 - `tests/test_architecture.py` — 4 tests
@@ -55,12 +58,14 @@
 - `tests/test_pipeline.py` — 13 tests (stage progression, staging, production)
 - `tests/test_handoff.py` — 7 tests
 - `tests/test_agent.py` — 9 tests (LLM provider detection, audit, completeness, refactor)
-- `tests/test_cli.py` — 19 tests (all commands smoke-tested via Typer CliRunner)
+- `tests/test_cli.py` — 32 tests (all commands + format/severity branches + fix dedup + badge formats)
 - `tests/test_misc.py` — 16 tests (detector, debt, baseline)
 - `tests/test_fix_prompt.py` — 6 tests
+- `tests/test_fixers.py` — 12 tests (per-rule idempotent fixers)
+- `tests/test_badge.py` — 7 tests
 - `tests/test_reporters.py` — 4 tests
 - `tests/test_test_runner.py` — 11 tests
-- **Coverage: 80% overall** (excluding MCP server which needs live runtime)
+- **Coverage: 82% overall** (excluding MCP server which needs live runtime)
 
 ### Previously Built
 - 15+ quality gates (architecture, domain, security, hygiene, dependencies)
@@ -75,18 +80,16 @@
 
 ## P0 Backlog
 - **Publish v0.3.0 to PyPI** (needs user's project-scoped PyPI token).
-- **Verify all URLs in README/CHANGELOG** use `crystalcodes.dev`.
 
 ## P1 Backlog
 - Write descriptive Git commit messages for all "Save to Github" pushes (user complained about UUID auto-commits).
-- `crystal fix` currently suggests the same fix ("Add .env to .gitignore") for many issue types — needs per-rule fix templates.
-- Add CHANGELOG.md entry for v0.3.0.
+- Add MCP server integration tests (requires FastMCP test harness).
 
 ## P2 / Future
-- MCP server integration tests (requires FastMCP harness).
 - Increase detector coverage (Ruby, Swift, Kotlin).
 - Stack-specific rule packs for more frameworks.
 - Web dashboard for multi-project monitoring.
+- Hosted badge endpoint at crystalcodes.dev/badge/{slug}.json.
 
 ---
 
@@ -95,8 +98,10 @@
 /app/project-crystal/crystal-guard/
 ├── pyproject.toml              # crystal-code v0.3.0
 ├── src/crystal_guard/
-│   ├── cli.py                  # 15 commands (Typer)
+│   ├── cli.py                  # 16 commands (Typer)
 │   ├── agent.py                # CrystalAgent (audit/completeness/refactor)
+│   ├── badge.py                # shields.io-compatible health badge
+│   ├── fixers.py               # per-rule auto-fixer whitelist
 │   ├── pipeline.py             # stage-aware checking
 │   ├── handoff.py              # session handoff generator
 │   ├── baseline.py, debt.py    # trend tracking

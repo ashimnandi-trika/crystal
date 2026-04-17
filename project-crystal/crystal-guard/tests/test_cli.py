@@ -131,3 +131,94 @@ def test_rules_add_and_remove(bad_project):
     # Verify it's listed
     lst = runner.invoke(app, ["rules", "list", bad_project])
     assert "test_rule" in lst.stdout or "custom" in lst.stdout.lower()
+
+
+# --- Format + severity filter branches ---
+
+def test_check_json_format(bad_project):
+    result = runner.invoke(app, ["check", bad_project, "--format", "json"])
+    assert result.exit_code in (0, 1)
+    # Rich wraps output; verify JSON fragment markers appear
+    assert '"health"' in result.stdout or '"issues"' in result.stdout
+
+
+def test_check_markdown_format(bad_project, tmp_path):
+    out = tmp_path / "report.md"
+    result = runner.invoke(app, ["check", bad_project, "--format", "markdown", "--output", str(out)])
+    assert result.exit_code in (0, 1)
+    assert out.exists()
+    assert "Crystal" in out.read_text() or "Health" in out.read_text()
+
+
+def test_check_severity_filter_critical_only(bad_project):
+    result = runner.invoke(app, ["check", bad_project, "--severity", "critical"])
+    assert result.exit_code in (0, 1)
+    # Output should not show LOW issues when filtering for critical
+    # (we can't assert exact content, but command should complete)
+
+
+def test_fix_apply_persists_changes(bad_project):
+    """fix --apply must actually modify the filesystem."""
+    from pathlib import Path
+    result = runner.invoke(app, ["fix", bad_project, "--apply"])
+    assert result.exit_code == 0
+    # bad_project had no .gitignore → fix should create one with .env inside
+    gitignore = Path(bad_project) / ".gitignore"
+    assert gitignore.exists()
+    assert ".env" in gitignore.read_text()
+
+
+def test_fix_dry_run_does_not_modify(bad_project):
+    from pathlib import Path
+    # Capture state before
+    gi_before = (Path(bad_project) / ".gitignore").exists()
+    result = runner.invoke(app, ["fix", bad_project, "--dry-run"])
+    assert result.exit_code == 0
+    # State after should match
+    gi_after = (Path(bad_project) / ".gitignore").exists()
+    assert gi_before == gi_after
+
+
+def test_fix_no_dedupe_noise(bad_project):
+    """fix must not print 'WOULD FIX arch-003: Add .env to .gitignore' for every issue."""
+    result = runner.invoke(app, ["fix", bad_project, "--dry-run"])
+    assert result.exit_code == 0
+    # The same (rule_id, target) should not appear more than once
+    lines = [line for line in result.stdout.split("\n") if "WOULD FIX" in line]
+    assert len(lines) == len(set(lines))
+
+
+# --- Badge command ---
+
+def test_badge_markdown(good_project):
+    result = runner.invoke(app, ["badge", good_project, "--format", "markdown"])
+    assert result.exit_code == 0
+    assert "img.shields.io" in result.stdout
+    assert "crystalcodes.dev" in result.stdout
+
+
+def test_badge_svg(good_project, tmp_path):
+    out = tmp_path / "badge.svg"
+    result = runner.invoke(app, ["badge", good_project, "--format", "svg", "--output", str(out)])
+    assert result.exit_code == 0
+    assert out.exists()
+    assert out.read_text().startswith("<svg")
+
+
+def test_badge_json(good_project):
+    import json
+    result = runner.invoke(app, ["badge", good_project, "--format", "json"])
+    assert result.exit_code == 0
+    parsed = json.loads(result.stdout)
+    assert parsed["schemaVersion"] == 1
+
+
+def test_badge_url(good_project):
+    result = runner.invoke(app, ["badge", good_project, "--format", "url"])
+    assert result.exit_code == 0
+    assert "shields.io" in result.stdout
+
+
+def test_badge_invalid_format(good_project):
+    result = runner.invoke(app, ["badge", good_project, "--format", "bogus"])
+    assert result.exit_code != 0

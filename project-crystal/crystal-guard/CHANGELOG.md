@@ -2,6 +2,61 @@
 
 All notable changes to Crystal will be documented in this file.
 
+## [0.3.0] - 2026-02
+
+### Added
+- **Crystal Agent** (`agent.py`): `crystal audit [--llm]` correlates issues
+  across analyzers, identifies hotspots, and emits recommendations.
+  `--llm` adds a natural-language insight section. Provider auto-detected:
+  `ANTHROPIC_API_KEY` > `OPENAI_API_KEY` > `EMERGENT_LLM_KEY`.
+- `crystal completeness` — parses PRD checklist items and reports progress
+  against current project metrics.
+- **Dependency Analyzer** (`analyzers/dependencies.py`) — pip-audit / npm-audit
+  integration (`dep-001`), unused Python deps (`dep-003`), duplicate-
+  functionality packages like axios+node-fetch (`dep-004`).
+- `crystal diff` — checks only files changed since last git commit.
+- `crystal fix` — per-rule auto-fixers (`fixers.py`) for `arch-001`,
+  `arch-002`, `arch-003`, `arch-006`, `arch-007`, `sec-004`. Idempotent,
+  never modifies source code, deduped by `(rule_id, target)`.
+- `crystal rules list | add | remove` — manage architecture rules from CLI.
+- `crystal badge` — generates shields.io-compatible Crystal health badge
+  (markdown / svg / json / url) linking back to crystalcodes.dev.
+- Session handoff enhancements (`handoff.py`) — "this session" summary
+  line and test-regression detection.
+- MCP prompts (`crystal-review`, `crystal-plan`) and
+  `crystal://session-log` resource.
+- **Unit test suite** (`tests/`) — 161 tests, 82% coverage.
+
+### Fixed
+- **Critical**: inverted severity threshold in `scoring/__init__.py`;
+  `threshold=high` now correctly blocks critical+high (not the reverse).
+- **Critical**: syntax error in `pipeline.py` (mangled docstring) that
+  blocked all imports of the CLI.
+- **High**: `test_runner.py` was passing `env=None` to `subprocess.run`,
+  wiping the system PATH on some platforms.
+- **High**: Jest/Vitest parser was reading `failed=0` on failing suites
+  because the "Tests:" prefix broke the first comma segment's int-parse.
+- **Medium**: `crystal fix` was suggesting "Add .env to .gitignore" for
+  every single issue regardless of rule type. Now dispatches per-rule
+  via a safe whitelist and deduplicates outputs.
+- `crystal rules list` crashed with f-string syntax error on nested braces.
+- Backend hardening (`server.py`): CORS restricted to `localhost:3000`,
+  paginated `/api/status`, `/health` endpoint, MongoDB try/except, pinned
+  `requirements.txt`.
+- Frontend: clipboard fallback for non-HTTPS contexts, async script loads,
+  `use-toast` delay fixed, GitHub URL corrected.
+- `.gitignore` deduplicated.
+- 74 Ruff lint errors cleaned up across `agent.py`, `cli.py`, `handoff.py`.
+
+### Changed
+- `CrystalAgent.__init__(use_llm=True/False)` for opt-in LLM usage.
+- `crystal fix` now ignores severity and relies on the explicit
+  `AUTO_FIXERS` whitelist — so it can auto-fix CRITICAL `sec-004`
+  (env-not-in-gitignore), which is always safe.
+- `pyproject.toml`: added `[tool.ruff]` (excludes test fixtures),
+  `[tool.pytest.ini_options]` with `pythonpath = ["src"]`,
+  `[tool.coverage.run]` omitting the MCP server module.
+
 ## [0.2.0] - 2026-01-16
 
 ### Added
