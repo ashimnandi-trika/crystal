@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050811"/>
+      <stop offset="1" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0" stop-color="#1e3a8a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="crystal-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="crystal-sheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#ffffff" stroke-width="0.5" stroke-opacity="0.03"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <ellipse cx="600" cy="420" rx="700" ry="260" fill="url(#glow)"/>
+
+  <!-- Badge -->
+  <g transform="translate(88 88)">
+    <rect x="0" y="0" rx="22" ry="22" width="350" height="44" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+    <circle cx="24" cy="22" r="4" fill="#22c55e"/>
+    <text x="42" y="28" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="14" fill="#94a3b8" letter-spacing="1">
+      OPEN SOURCE · crystal-code v0.3.0
+    </text>
+  </g>
+
+  <!-- Headline -->
+  <text x="88" y="260" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="104" fill="#ffffff" letter-spacing="-3">Crystal</text>
+  <text x="88" y="360" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="600" font-size="52" fill="#e2e8f0" letter-spacing="-1">Clean code that ships.</text>
+  <text x="88" y="410" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-weight="400" font-size="26" fill="#94a3b8">
+    16+ quality gates · AI audit · session handoff · MCP server
+  </text>
+
+  <!-- Command line preview -->
+  <g transform="translate(88 470)">
+    <rect x="0" y="0" width="720" height="68" rx="12" ry="12" fill="#0b1220" stroke="#1e293b" stroke-width="1"/>
+    <text x="22" y="43" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="22" fill="#64748b">$</text>
+    <text x="46" y="43" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="22" fill="#e2e8f0">pip install crystal-code</text>
+    <text x="404" y="43" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="18" fill="#22c55e">Health: A 100/100</text>
+  </g>
+
+  <!-- Crystal icon -->
+  <g transform="translate(960 260)">
+    <path d="M -130 -20 L 0 -170 L 130 -20 L 0 190 Z" fill="url(#crystal-g)" stroke="#3b82f6" stroke-width="2" stroke-linejoin="round" opacity="0.95"/>
+    <path d="M -130 -20 L 0 -20 L 130 -20" fill="none" stroke="#93c5fd" stroke-width="1.5" opacity="0.9"/>
+    <path d="M -65 -95 L 0 -20 L 65 -95" fill="none" stroke="#93c5fd" stroke-width="1.5" opacity="0.9"/>
+    <path d="M -130 -20 L 0 190" fill="none" stroke="#1e3a8a" stroke-width="1" opacity="0.6"/>
+    <path d="M 130 -20 L 0 190" fill="none" stroke="#1e3a8a" stroke-width="1" opacity="0.6"/>
+    <path d="M -100 -40 L -15 -140 L 0 -20 Z" fill="url(#crystal-sheen)"/>
+  </g>
+
+  <!-- Footer -->
+  <text x="88" y="590" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="18" fill="#64748b">crystalcodes.dev</text>
+  <text x="1112" y="590" text-anchor="end" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#64748b">MIT · works with Cursor · Claude · Windsurf · Emergent</text>
+</svg>

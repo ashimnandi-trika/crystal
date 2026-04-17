@@ -3,7 +3,7 @@ import "./App.css";
 import {
   Server, Terminal, ShieldCheck, FolderTree, Layers, GitBranch,
   ArrowRight, Check, Copy, ExternalLink, ChevronDown,
-  BarChart3, FileText, RefreshCw, Zap,
+  BarChart3, FileText, RefreshCw, Zap, Sparkles, PackageCheck, Wand2,
 } from "lucide-react";
 
 const HERO_BG = "https://static.prod-images.emergentagent.com/jobs/3778f3fa-dbe3-475d-870a-0b138480ff3d/images/5562c81e28f7695995a13ea769adea0593fe6447e0c319030cb8381c3bf4fc80.png";
@@ -152,12 +152,12 @@ const Hero = () => (
         <TerminalWindow
           lines={[
             { t: "cmd", v: "pip install crystal-code" },
-            { t: "out", v: "Installed crystal-code-0.1.0" },
+            { t: "out", v: "Installed crystal-code-0.3.0" },
             { t: "cmd", v: "crystal init" },
             { t: "ok",  v: "Found: React + Python + MongoDB" },
-            { t: "ok",  v: "15 quality checks loaded" },
+            { t: "ok",  v: "16 quality gates + dependency audit loaded" },
             { t: "cmd", v: "crystal check" },
-            { t: "ok",  v: "15/15 checks passed  |  Health: A (100/100)" },
+            { t: "ok",  v: "All gates passed  |  Health: A (100/100)" },
             { t: "cmd", v: "crystal handoff" },
             { t: "ok",  v: "Handoff ready. Paste into your next AI session." },
           ]}
@@ -353,17 +353,18 @@ const QuickStart = () => (
           copyText="pip install crystal-code && crystal init && crystal check"
           lines={[
             { t: "cmd", v: "pip install crystal-code" },
-            { t: "out", v: "Installed crystal-code-0.1.0" },
+            { t: "out", v: "Installed crystal-code-0.3.0" },
             { t: "cmd", v: "crystal init" },
             { t: "ok",  v: "Found: React + Python + MongoDB" },
             { t: "ok",  v: "Created .crystal/ config" },
-            { t: "ok",  v: "15 quality checks loaded" },
+            { t: "ok",  v: "16 quality gates + dependency audit loaded" },
             { t: "cmd", v: "crystal check" },
             { t: "out", v: "" },
             { t: "ok",  v: "Architecture     PASS" },
             { t: "ok",  v: "Domain Purity    PASS" },
             { t: "warn",v: "Security         1 issue found" },
             { t: "ok",  v: "Code Hygiene     PASS" },
+            { t: "ok",  v: "Dependencies     PASS" },
             { t: "out", v: "" },
             { t: "out", v: "Health: B (82/100)" },
             { t: "err", v: "[CRITICAL] API key found in src/config.js line 15" },
@@ -380,8 +381,11 @@ const QuickStart = () => (
    ═══════════════════════════════════════════════════ */
 const features = [
   { icon: FileText, title: "Picks Up Where You Left Off", body: "Every time you start a new AI chat, you lose context. Crystal reads your project and writes a summary. Paste it in. Your AI knows exactly what happened before." },
-  { icon: ShieldCheck, title: "15 Automatic Checks", body: "Is your password hardcoded? Database code in the frontend? Missing tests? Crystal runs 15 checks and tells you exactly what to fix. In plain English." },
-  { icon: BarChart3, title: "Tracks Your Progress", body: "Yesterday you had 47 files and 12 tests. Today it's 52 files and 11 tests. A test disappeared. Crystal notices and tells you." },
+  { icon: ShieldCheck, title: "16+ Automatic Gates", body: "Is your password hardcoded? Database code in the frontend? Missing tests? Vulnerable dependencies? Crystal runs 16+ gates across architecture, security, domain purity, hygiene, and deps. In plain English." },
+  { icon: Sparkles, title: "AI-Powered Audit", body: "Run crystal audit and Crystal correlates issues across analyzers, finds hotspots, and emits a recommendation report. Add --llm for a natural-language senior-engineer review using Claude or GPT." },
+  { icon: PackageCheck, title: "Dependency Health", body: "Crystal runs pip-audit and npm-audit, flags unused packages, and catches duplicate libraries (axios + node-fetch, moment + dayjs). Kills dependency bloat before it ships." },
+  { icon: Wand2, title: "Safe Auto-Fixes", body: "crystal fix applies idempotent, whitelisted fixes (create .gitignore, add .env line, scaffold tests/) and never touches your source code. Dry-run by default; --apply to commit changes." },
+  { icon: BarChart3, title: "Tracks Your Progress", body: "Yesterday you had 47 files and 12 tests. Today it's 52 files and 11 tests. A test disappeared. Crystal notices, warns you, and writes it into your handoff." },
   { icon: RefreshCw, title: "Works Across Tools", body: "Start in Cursor, continue in Claude, finish in Emergent. Crystal generates a handoff that works everywhere. Your context is never locked to one tool." },
   { icon: Zap, title: "Helps Your AI in Real-Time", body: "Crystal plugs into your AI assistant via MCP. While the AI writes code, Crystal says 'that file goes in the wrong folder' before it's too late." },
   { icon: FolderTree, title: "Rules That Stick", body: "Define your project rules once. 'Keep database code in the backend.' 'No secrets in the code.' Crystal enforces them every session, every tool, every time." },
@@ -394,16 +398,16 @@ const Features = () => (
       <Reveal>
         <p className="text-[13px] font-mono text-blue-400 tracking-[0.2em] uppercase mb-5">What Crystal Does</p>
         <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white leading-[1.1] max-w-3xl">
-          Seven things that keep<br />
+          Ten things that keep<br />
           <span className="text-neutral-500">your project alive.</span>
         </h2>
       </Reveal>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-20">
         {features.map((f, i) => (
-          <Reveal key={i} delay={i * 70}>
+          <Reveal key={i} delay={i * 60}>
             <div
               data-testid={`feature-card-${i}`}
-              className={`rounded-2xl border border-white/[0.07] bg-white/[0.015] p-8 card-lift h-full ${i === 6 ? "md:col-span-2 lg:col-span-1" : ""}`}
+              className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-8 card-lift h-full"
             >
               <div className="w-10 h-10 rounded-lg bg-blue-500/[0.08] border border-blue-500/20 flex items-center justify-center mb-5">
                 <f.icon size={18} className="text-blue-400" />
@@ -462,12 +466,21 @@ const UseCases = () => (
    ═══════════════════════════════════════════════════ */
 const commands = [
   { cmd: "crystal init", desc: "Set up Crystal. It figures out your tech stack automatically.", flags: "--stack react-python-mongo" },
-  { cmd: "crystal check", desc: "Run all 15 checks. See your health score (A to F).", flags: "--format json" },
+  { cmd: "crystal check", desc: "Run all quality gates with a stage (local / staging / production).", flags: "--stage production" },
+  { cmd: "crystal audit", desc: "Deep audit with hotspots + AI insight (optional).", flags: "--llm" },
+  { cmd: "crystal fix", desc: "Safe auto-fixes: gitignore, .env, tests/ scaffold. Never touches source.", flags: "--apply" },
+  { cmd: "crystal fix-prompt", desc: "Paste-ready AI prompts to fix every issue, with plain-English WHY.", flags: "" },
+  { cmd: "crystal diff", desc: "Check only files changed since the last git commit.", flags: "" },
   { cmd: "crystal handoff", desc: "Create a summary to paste into your next AI session.", flags: "--output handoff.md" },
+  { cmd: "crystal completeness", desc: "Compare your PRD checklist with what's actually built.", flags: "" },
+  { cmd: "crystal test", desc: "Run your project's real tests (pytest / jest / vitest).", flags: "" },
   { cmd: "crystal status", desc: "See how your project is doing. Score, trends, changes.", flags: "" },
-  { cmd: "crystal gates", desc: "See each of the 15 checks individually. Pass or fail.", flags: "" },
+  { cmd: "crystal gates", desc: "See each quality gate individually. Pass or fail.", flags: "" },
+  { cmd: "crystal report", desc: "Detailed markdown report to share or attach to a PR.", flags: "--output report.md" },
   { cmd: "crystal architect", desc: "Generate an architecture.md with your project rules.", flags: "--output architecture.md" },
-  { cmd: "crystal report", desc: "Create a detailed report to share or attach to a PR.", flags: "--output report.md" },
+  { cmd: "crystal badge", desc: "Shields.io-compatible health badge for your README.", flags: "--format markdown" },
+  { cmd: "crystal rules", desc: "List, add, or remove architecture rules from the CLI.", flags: "list / add / remove" },
+  { cmd: "crystal mcp serve", desc: "Run the MCP server so Cursor / Claude / Windsurf can talk to Crystal.", flags: "" },
 ];
 
 const Commands = () => (
@@ -648,7 +661,7 @@ const Footer = () => (
           MIT License &middot; Free forever &middot; Built for people who build with AI
         </p>
         <div className="flex items-center gap-8">
-          <a href="https://github.com" className="text-[13px] text-neutral-500 hover:text-white transition-colors">GitHub</a>
+          <a href="https://github.com/ashimnandi-trika/crystal" className="text-[13px] text-neutral-500 hover:text-white transition-colors">GitHub</a>
           <a href="#commands" className="text-[13px] text-neutral-500 hover:text-white transition-colors">Commands</a>
           <a href="#quick-start" className="text-[13px] text-neutral-500 hover:text-white transition-colors">Get Started</a>
         </div>
