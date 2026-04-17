@@ -76,7 +76,7 @@ Once connected, your AI assistant can call these tools:
 | `check_architecture` | Validates file structure and organization |
 | `check_domain_purity` | Checks if files respect domain boundaries |
 | `check_security` | Scans for hardcoded secrets and vulnerabilities |
-| `run_all_checks` | Runs all 15 quality gates at once |
+| `run_all_checks` | Runs all 20 quality gates at once |
 | `validate_file_placement` | Checks if a new file is going in the right place |
 | `get_project_context` | Gets project state, PRD, git info for context |
 | `get_health_score` | Quick health score (A-F) |
