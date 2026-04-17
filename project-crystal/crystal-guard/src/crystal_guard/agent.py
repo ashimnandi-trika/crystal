@@ -2,29 +2,88 @@
 
 Works without LLM by default (rule-based analysis).
 With an OpenAI/Anthropic key, uses LLM for deeper natural language analysis.
+Set EMERGENT_LLM_KEY to use the Emergent Universal key (requires emergentintegrations).
 """
 
 from __future__ import annotations
 
+import os
+import asyncio
 from pathlib import Path
 from crystal_guard.config import load_config, get_crystal_dir, walk_project_files, CODE_EXTENSIONS, is_test_file
 from crystal_guard.detector import detect_stack
 from crystal_guard.analyzers import architecture, domain, security, placeholders, dependencies
 from crystal_guard.scoring import calculate_health
 from crystal_guard.rules.loader import load_rules
-from crystal_guard.baseline import load_baselines
 from crystal_guard.debt import get_debt_summary
-from crystal_guard.handoff import get_project_metrics, get_git_state
+from crystal_guard.handoff import get_project_metrics
 import re
 
 
 class CrystalAgent:
-    def __init__(self, project_path: str, llm_key: str = None, llm_provider: str = None):
+    def __init__(self, project_path: str, llm_key: str = None, llm_provider: str = None, use_llm: bool = True):
         self.project_path = str(Path(project_path).resolve())
         self.config = load_config(self.project_path)
         self.rules = load_rules(self.project_path, self.config.stack)
-        self.llm_key = llm_key
-        self.llm_provider = llm_provider
+        if not use_llm:
+            self.llm_key = None
+            self.llm_provider = None
+            return
+        # Priority: explicit arg > user env > Emergent key
+        self.llm_key = (
+            llm_key
+            or os.environ.get("ANTHROPIC_API_KEY")
+            or os.environ.get("OPENAI_API_KEY")
+            or os.environ.get("EMERGENT_LLM_KEY")
+        )
+        self.llm_provider = llm_provider or self._detect_provider()
+
+    def _detect_provider(self) -> str | None:
+        if os.environ.get("ANTHROPIC_API_KEY"):
+            return "anthropic"
+        if os.environ.get("OPENAI_API_KEY"):
+            return "openai"
+        if os.environ.get("EMERGENT_LLM_KEY"):
+            return "emergent"
+        return None
+
+    def _llm_insight(self, system: str, prompt: str) -> str | None:
+        """Return LLM-generated text, or None if no LLM available/configured."""
+        if not self.llm_key or not self.llm_provider:
+            return None
+        try:
+            if self.llm_provider == "emergent":
+                from emergentintegrations.llm.chat import LlmChat, UserMessage
+                chat = LlmChat(
+                    api_key=self.llm_key,
+                    session_id="crystal-agent",
+                    system_message=system,
+                ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+                return asyncio.run(chat.send_message(UserMessage(text=prompt)))
+            if self.llm_provider == "anthropic":
+                import anthropic
+                client = anthropic.Anthropic(api_key=self.llm_key)
+                resp = client.messages.create(
+                    model="claude-sonnet-4-5-20250929",
+                    max_tokens=1024,
+                    system=system,
+                    messages=[{"role": "user", "content": prompt}],
+                )
+                return resp.content[0].text
+            if self.llm_provider == "openai":
+                from openai import OpenAI
+                client = OpenAI(api_key=self.llm_key)
+                resp = client.chat.completions.create(
+                    model="gpt-5.1",
+                    messages=[
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": prompt},
+                    ],
+                )
+                return resp.choices[0].message.content
+        except Exception:
+            return None
+        return None
 
     def audit(self) -> str:
         """Run comprehensive project audit — correlate issues across analyzers."""
@@ -56,7 +115,7 @@ class CrystalAgent:
         hotspots = sorted(files_with_issues.items(), key=lambda x: len(x[1]), reverse=True)
 
         if hotspots:
-            lines.append(f"\n## Problem Hotspots")
+            lines.append("\n## Problem Hotspots")
             lines.append("Files with the most issues (fix these first):")
             for filepath, file_issues in hotspots[:5]:
                 crits = sum(1 for i in file_issues if i.severity == "critical")
@@ -65,7 +124,7 @@ class CrystalAgent:
                     lines.append(f"- [{issue.severity.upper()}] {issue.rule_id}: {issue.message}")
 
         # Cross-analyzer patterns
-        lines.append(f"\n## Analysis")
+        lines.append("\n## Analysis")
         sec_count = sum(1 for i in issues if i.analyzer == "security")
         dom_count = sum(1 for i in issues if i.analyzer == "domain")
         arch_count = sum(1 for i in issues if i.analyzer == "architecture")
@@ -82,13 +141,28 @@ class CrystalAgent:
         elif debt.get("trend") == "improving":
             lines.append("- Technical debt is shrinking. Good trajectory.")
 
-        lines.append(f"\n## Recommendation")
+        lines.append("\n## Recommendation")
         if health.score >= 90:
             lines.append("Project is in excellent shape. Maintain current practices.")
         elif health.score >= 60:
             lines.append("Project needs targeted fixes. Focus on critical and high severity issues first.")
         else:
             lines.append("Project needs significant work. Do not deploy until critical issues are resolved.")
+
+        # Optional LLM-powered insight
+        if self.llm_key:
+            rule_report = "\n".join(lines)
+            insight = self._llm_insight(
+                system=(
+                    "You are Crystal, a senior staff engineer reviewing a codebase. "
+                    "Given a rule-based audit, add 3-5 concise insights a reviewer "
+                    "would raise. Focus on architectural patterns and risk, not lint."
+                ),
+                prompt=f"Audit report:\n{rule_report}\n\nAdd your insights as markdown bullets under '## AI Insight'.",
+            )
+            if insight:
+                lines.append("")
+                lines.append(insight.strip())
 
         return "\n".join(lines)
 
@@ -100,7 +174,6 @@ class CrystalAgent:
 
         prd = prd_path.read_text()
         metrics = get_project_metrics(self.project_path)
-        root = Path(self.project_path).resolve()
 
         # Extract checklist items from PRD
         total_items = 0
@@ -131,7 +204,7 @@ class CrystalAgent:
         else:
             lines.append("\nNo checklist items found in PRD. Add items like `- [ ] Feature name`.")
 
-        lines.append(f"\n## Project Metrics")
+        lines.append("\n## Project Metrics")
         lines.append(f"- Files: {metrics['file_count']}")
         lines.append(f"- Tests: {metrics['test_file_count']}")
         lines.append(f"- Endpoints: {metrics['endpoint_count']}")

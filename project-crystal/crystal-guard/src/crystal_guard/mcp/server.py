@@ -342,7 +342,7 @@ def prompt_review() -> str:
 
     arch_md = generate_architecture_md(path)
 
-    result = f"Review this project against its architecture rules.\n\n"
+    result = "Review this project against its architecture rules.\n\n"
     result += f"Current Health: {health.grade} ({health.score}/100)\n"
     result += f"Issues: {health.total_issues}\n\n"
     result += f"Architecture Rules:\n{arch_md}\n\n"
@@ -368,7 +368,7 @@ def prompt_plan() -> str:
     all_issues.extend(security.analyze(path, rules))
     health = calculate_health(all_issues)
 
-    result = f"Plan the next feature for this project.\n\n"
+    result = "Plan the next feature for this project.\n\n"
     result += f"Current Health: {health.grade} ({health.score}/100)\n"
     result += f"PRD:\n{prd[:2000]}\n\n"
     result += f"Architecture Rules:\n{generate_architecture_md(path)[:1000]}\n\n"

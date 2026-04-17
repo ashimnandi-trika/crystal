@@ -40,3 +40,17 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 crystal_guard = ["rules/builtin/*.yaml"]
+
+[tool.ruff]
+extend-exclude = ["tests/fixtures/**"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+norecursedirs = ["tests/fixtures"]
+
+[tool.coverage.run]
+source = ["src/crystal_guard"]
+omit = [
+    "src/crystal_guard/mcp/server.py",
+]

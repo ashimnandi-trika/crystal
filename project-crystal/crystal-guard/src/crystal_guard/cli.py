@@ -592,7 +592,9 @@ def rules_list(
                     sev = rule.get("severity", "?")
                     msg = rule.get("message", "?")
                     disabled = rid in config.ignore_rules
-                    status = "[dim]DISABLED[/dim]" if disabled else f"[{{'critical':'red','high':'yellow','medium':'blue','low':'dim'}.get(sev, 'white')}]{sev.upper()}[/]"
+                    sev_colors = {"critical": "red", "high": "yellow", "medium": "blue", "low": "dim"}
+                    sev_color = sev_colors.get(sev, "white")
+                    status = "[dim]DISABLED[/dim]" if disabled else f"[{sev_color}]{sev.upper()}[/]"
                     console.print(f"  {rid:10s} {status:20s} {msg}")
 
 
@@ -738,6 +740,7 @@ def diff(
 def audit(
     path: str = typer.Argument(".", help="Project path"),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Write audit to file"),
+    use_llm: bool = typer.Option(False, "--llm/--no-llm", help="Use LLM for deeper insights (requires OPENAI_API_KEY, ANTHROPIC_API_KEY, or EMERGENT_LLM_KEY)"),
 ):
     """Run comprehensive AI-powered project audit.
 
@@ -747,9 +750,14 @@ def audit(
     from crystal_guard.agent import CrystalAgent
 
     project_path = str(Path(path).resolve())
-    agent = CrystalAgent(project_path)
+    agent = CrystalAgent(project_path, use_llm=use_llm)
 
-    console.print("[dim]Running comprehensive audit...[/dim]\n")
+    if use_llm and agent.llm_provider:
+        console.print(f"[dim]Running comprehensive audit with {agent.llm_provider} LLM insight...[/dim]\n")
+    elif use_llm:
+        console.print("[yellow]--llm requested but no API key found. Falling back to rule-based audit.[/yellow]\n")
+    else:
+        console.print("[dim]Running comprehensive audit...[/dim]\n")
     report = agent.audit()
 
     if output:
@@ -767,7 +775,7 @@ def completeness(
     from crystal_guard.agent import CrystalAgent
 
     project_path = str(Path(path).resolve())
-    agent = CrystalAgent(project_path)
+    agent = CrystalAgent(project_path, use_llm=False)
     console.print(agent.completeness())
 
 

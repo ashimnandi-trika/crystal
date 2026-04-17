@@ -204,6 +204,32 @@
       "issue_count": 0,
       "issues_by_severity": {},
       "issue_ids": []
+    },
+    {
+      "timestamp": "2026-04-17T04:08:28.262243+00:00",
+      "health_score": 96,
+      "issue_count": 2,
+      "issues_by_severity": {
+        "low": 2
+      },
+      "issue_ids": [
+        "dep-003",
+        "dep-003"
+      ]
+    },
+    {
+      "timestamp": "2026-04-17T04:08:28.798298+00:00",
+      "health_score": 92,
+      "issue_count": 3,
+      "issues_by_severity": {
+        "low": 2,
+        "medium": 1
+      },
+      "issue_ids": [
+        "dep-003",
+        "dep-003",
+        "stg-002"
+      ]
     }
   ],
   "recurring": {
@@ -213,7 +239,16 @@
       "message": "Environment variable REACT_APP_API_URL is used in code but not defined in any .env file.",
       "severity": "medium",
       "first_seen": "2026-04-16T09:58:32.005263+00:00",
-      "last_seen": "2026-04-16T10:00:24.622929+00:00",
+      "last_seen": "2026-04-17T04:08:28.798298+00:00",
+      "count": 5
+    },
+    "dep-003:requirements.txt": {
+      "rule_id": "dep-003",
+      "file": "requirements.txt",
+      "message": "Package 'pymongo' is in requirements but may not be imported in code.",
+      "severity": "low",
+      "first_seen": "2026-04-17T04:08:28.262243+00:00",
+      "last_seen": "2026-04-17T04:08:28.798298+00:00",
       "count": 4
     }
   }

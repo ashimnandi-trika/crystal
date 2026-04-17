@@ -11,7 +11,7 @@ import json
 import re
 from pathlib import Path
 from crystal_guard.analyzers import Issue
-from crystal_guard.config import walk_project_files, CODE_EXTENSIONS, is_test_file
+from crystal_guard.config import walk_project_files, is_test_file
 
 # Common duplicate packages
 DUPLICATE_GROUPS = [
@@ -145,7 +145,7 @@ def _check_node_deps(root: Path, pkg_path: Path) -> list[Issue]:
                 rule_id="dep-004",
                 message=f"Multiple {category} packages installed: {', '.join(sorted(found))}. Pick one.",
                 suggestion=f"Remove all but one {category} package to reduce bundle size and complexity.",
-                why=f"Having multiple packages that do the same thing bloats your app and creates confusion about which one to use.",
+                why="Having multiple packages that do the same thing bloats your app and creates confusion about which one to use.",
             ))
 
     # dep-001: Run npm audit

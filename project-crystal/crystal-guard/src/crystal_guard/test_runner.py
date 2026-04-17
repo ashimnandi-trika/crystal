@@ -149,11 +149,13 @@ def _parse_node_tests(result: dict, proc):
         line = line.strip()
         # Jest: "Tests: 2 failed, 5 passed, 7 total"
         if "Tests:" in line and "total" in line:
-            parts = line.split(",")
+            # Strip the "Tests:" prefix so each comma-separated part starts with a number
+            payload = line.split("Tests:", 1)[1]
+            parts = payload.split(",")
             for part in parts:
                 part = part.strip()
                 words = part.split()
-                if len(words) < 1:
+                if not words:
                     continue
                 try:
                     val = int(words[0])

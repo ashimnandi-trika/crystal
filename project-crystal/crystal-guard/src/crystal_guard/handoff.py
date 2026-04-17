@@ -204,7 +204,6 @@ def generate_handoff_prompt(
             summary_parts.append(f"added {added_files['delta']} files")
         if fixed_issues:
             summary_parts.append(f"fixed {abs(fixed_issues['delta'])} issues")
-        prev_grade = None
         for c in baseline_changes:
             if c["metric"] == "health score" and c["delta"] != 0:
                 summary_parts.append(f"health went from {c['previous']} to {c['current']}")

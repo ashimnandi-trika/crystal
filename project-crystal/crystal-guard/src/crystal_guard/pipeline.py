@@ -1,12 +1,12 @@
-"""Pipeline — Stage-aware checking (local -> staging -> production)."""
-
-from __future__ import annotations
+"""Pipeline — Stage-aware checking (local -> staging -> production).
 
 Different strictness at each stage:
 - LOCAL: lenient, you're still building
 - STAGING: strict, no localhost, env vars must exist
 - PRODUCTION: zero tolerance, all tests pass, no TODOs
 """
+
+from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
