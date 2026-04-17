@@ -30,7 +30,7 @@ BUILTIN_CHECKS = [
     },
     {
         "id": "sec-003",
-        "pattern": r'sk-[a-zA-Z0-9]{20,}|pk_(test|live)_[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[0-9A-Z]{16}',
+        "pattern": r'sk-[a-zA-Z0-9]{20,}|pk_(test|live)_[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[0-9A-Z]{16}|sk-ant-[a-zA-Z0-9]{20,}|hf_[a-zA-Z0-9]{20,}|Bearer\s+[a-zA-Z0-9\-._~+/]{20,}',
         "message": "Recognized API key format found in code. This is a significant security risk.",
         "suggestion": "Remove this key immediately, rotate it, and store in .env file.",
         "severity": "critical",

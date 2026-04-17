@@ -317,6 +317,65 @@ def resource_prd() -> str:
     return "No PRD found. Run 'crystal init' first."
 
 
+@mcp.resource("crystal://session-log")
+def resource_session_log() -> str:
+    """Session history — what happened in previous sessions."""
+    path = get_project_path()
+    sessions_path = get_crystal_dir(path) / "sessions.json"
+    if sessions_path.exists():
+        return sessions_path.read_text()
+    return "No session history. Run 'crystal handoff' to create one."
+
+
+@mcp.prompt("crystal-review")
+def prompt_review() -> str:
+    """Review recent changes against project architecture rules."""
+    path = get_project_path()
+    config = load_config(path)
+    rules = load_rules(path, config.stack)
+    all_issues = []
+    all_issues.extend(architecture.analyze(path, rules))
+    all_issues.extend(domain.analyze(path, rules))
+    all_issues.extend(security.analyze(path, rules))
+    all_issues.extend(placeholders.analyze(path, rules))
+    health = calculate_health(all_issues)
+
+    arch_md = generate_architecture_md(path)
+
+    result = f"Review this project against its architecture rules.\n\n"
+    result += f"Current Health: {health.grade} ({health.score}/100)\n"
+    result += f"Issues: {health.total_issues}\n\n"
+    result += f"Architecture Rules:\n{arch_md}\n\n"
+    if all_issues:
+        result += "Current Issues:\n"
+        for i in all_issues[:10]:
+            result += f"- [{i.severity}] {i.rule_id}: {i.message} ({i.file})\n"
+    result += "\nProvide specific, actionable feedback on these issues."
+    return result
+
+
+@mcp.prompt("crystal-plan")
+def prompt_plan() -> str:
+    """Plan the next feature with architecture awareness."""
+    path = get_project_path()
+    config = load_config(path)
+    prd_path = get_crystal_dir(path) / "prd.md"
+    prd = prd_path.read_text() if prd_path.exists() else "No PRD available."
+    rules = load_rules(path, config.stack)
+
+    all_issues = []
+    all_issues.extend(architecture.analyze(path, rules))
+    all_issues.extend(security.analyze(path, rules))
+    health = calculate_health(all_issues)
+
+    result = f"Plan the next feature for this project.\n\n"
+    result += f"Current Health: {health.grade} ({health.score}/100)\n"
+    result += f"PRD:\n{prd[:2000]}\n\n"
+    result += f"Architecture Rules:\n{generate_architecture_md(path)[:1000]}\n\n"
+    result += "Plan the implementation while maintaining architectural integrity."
+    return result
+
+
 def run_server(transport: str = "stdio", port: int = 8080):
     """Run the Crystal MCP server."""
     if transport == "http":

@@ -1,5 +1,6 @@
 """Base types for Crystal Guard analyzers."""
 
+from __future__ import annotations
 from dataclasses import dataclass, asdict
 from enum import Enum
 

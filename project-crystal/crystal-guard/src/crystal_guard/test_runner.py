@@ -76,7 +76,6 @@ def run_tests(project_path: str) -> dict:
             text=True,
             cwd=cwd,
             timeout=120,
-            env=None,
         )
         result["ran"] = True
         result["output"] = proc.stdout + proc.stderr
@@ -108,26 +107,22 @@ def _parse_pytest(result: dict, proc):
     """Parse pytest output for test counts."""
     output = proc.stdout + proc.stderr
 
-    # pytest summary line: "5 passed, 2 failed, 1 skipped"
+    # pytest summary line: "5 passed, 2 failed, 1 skipped" or "=== 5 passed ==="
+    import re
     for line in output.split("\n"):
         line = line.strip()
-        if "passed" in line or "failed" in line or "error" in line:
-            parts = line.split()
-            for i, part in enumerate(parts):
-                if i == 0:
-                    continue
-                try:
-                    val = int(parts[i-1])
-                except ValueError:
-                    continue
-                if part == "passed":
-                    result["passed"] = val
-                elif part == "failed":
-                    result["failed"] = val
-                elif part == "skipped":
-                    result["skipped"] = val
-                elif part == "error":
-                    result["failed"] += val
+        m = re.search(r'(\d+)\s+passed', line)
+        if m:
+            result["passed"] = int(m.group(1))
+        m = re.search(r'(\d+)\s+failed', line)
+        if m:
+            result["failed"] = int(m.group(1))
+        m = re.search(r'(\d+)\s+skipped', line)
+        if m:
+            result["skipped"] = int(m.group(1))
+        m = re.search(r'(\d+)\s+error', line)
+        if m:
+            result["failed"] += int(m.group(1))
 
     result["total"] = result["passed"] + result["failed"] + result["skipped"]
 

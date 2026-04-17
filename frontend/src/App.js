@@ -136,7 +136,7 @@ const Hero = () => (
           <ArrowRight size={18} />
         </a>
         <a
-          href="https://github.com"
+          href="https://github.com/ashimnandi-trika/crystal"
           target="_blank"
           rel="noopener noreferrer"
           data-testid="hero-github-btn"
@@ -177,9 +177,21 @@ const Hero = () => (
 const TerminalWindow = ({ lines, showCopy = false, copyText = "" }) => {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
-    navigator.clipboard.writeText(copyText || lines.filter(l => l.t === "cmd").map(l => l.v).join("\n"));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const text = copyText || lines.filter(l => l.t === "cmd").map(l => l.v).join("\n");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
   return (
     <div data-testid="terminal-block" className="terminal-glow rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0A0A0A] w-full max-w-3xl mx-auto text-left shadow-2xl">

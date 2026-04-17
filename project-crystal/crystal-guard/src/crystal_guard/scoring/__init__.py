@@ -62,13 +62,12 @@ def calculate_health(issues: list[Issue], threshold: str = "high") -> HealthRepo
     sorted_issues = sorted(issues, key=lambda i: Severity(i.severity).rank)
     top_issues = sorted_issues[:5]
 
-    # Determine pass/fail
+    # Determine pass/fail — threshold_rank is the MINIMUM severity that blocks
+    # critical=0 is worst, low=3 is mildest. An issue blocks if its rank <= threshold_rank
     threshold_rank = Severity(threshold).rank if threshold in [s.value for s in Severity] else 1
     passed = all(Severity(i.severity).rank > threshold_rank for i in issues)
-    if counts["critical"] > 0:
-        passed = False
 
-    # Breakdown per analyzer
+    # Breakdown per analyzer (floor at 0)
     breakdown = {}
     analyzer_max = {"architecture": 30, "domain": 25, "security": 25, "placeholders": 20}
     for analyzer, max_pts in analyzer_max.items():

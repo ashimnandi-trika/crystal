@@ -12,28 +12,6 @@ from crystal_guard.config import (
 )
 
 
-@staticmethod
-def _count_endpoints(project_path: str) -> int:
-    """Count API endpoints by looking for route decorators."""
-    root = Path(project_path).resolve()
-    count = 0
-    route_patterns = [
-        "@app.", "@router.", "app.get", "app.post", "app.put", "app.delete", "app.patch",
-        "router.get", "router.post", "router.put", "router.delete",
-        "@api_view", "path(", "re_path(",
-    ]
-    for f in walk_project_files(project_path, {".py", ".js", ".ts"}):
-        if is_test_file(f, root):
-            continue
-        try:
-            content = f.read_text(errors="ignore")
-            for pattern in route_patterns:
-                count += content.count(pattern)
-        except OSError:
-            pass
-    return count
-
-
 def capture_baseline(project_path: str, health_score: int, grade: str, issues: list) -> dict:
     """Capture current project metrics as a baseline snapshot."""
     root = Path(project_path).resolve()

@@ -9,7 +9,7 @@ from crystal_guard.config import (
     load_config, save_config, CrystalConfig, get_crystal_dir
 )
 from crystal_guard.detector import detect_stack
-from crystal_guard.analyzers import architecture, domain, security, placeholders
+from crystal_guard.analyzers import architecture, domain, security, placeholders, dependencies
 from crystal_guard.scoring import calculate_health
 from crystal_guard.rules.loader import load_rules
 from crystal_guard.baseline import (
@@ -53,6 +53,9 @@ def run_all_analyzers(project_path: str, rules: dict, config: CrystalConfig) -> 
 
     if config.checks.get("placeholders", True):
         all_issues.extend(placeholders.analyze(project_path, rules))
+
+    if config.checks.get("dependencies", True):
+        all_issues.extend(dependencies.analyze(project_path, rules))
 
     # Filter ignored rules
     ignored = set(config.ignore_rules)
@@ -134,7 +137,7 @@ def init(
                                     rule_count += 1
 
     console.print("[green]Created .crystal/ configuration[/green]")
-    console.print(f"[green]Loaded {max(rule_count, 15)} rules for {detected['stack_id']}[/green]")
+    console.print(f"[green]Loaded {rule_count} rules for {detected['stack_id']}[/green]")
     console.print(f"\nRun [cyan]crystal check {path}[/cyan] to analyze your project.")
 
 
@@ -520,6 +523,7 @@ def fix_prompt(
     path: str = typer.Argument(".", help="Project path"),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Write fix prompts to file"),
     copy: bool = typer.Option(False, "--copy", "-c", help="Copy to clipboard"),
+    batch: bool = typer.Option(False, "--batch", "-b", help="Generate single combined prompt for all issues"),
 ):
     """Generate paste-ready AI prompts to fix every issue.
 
@@ -560,6 +564,211 @@ def fix_prompt(
         console.print(prompt_text)
 
     console.print(f"\n[bold]{len(issues)} issues[/bold] — fix in order shown (most critical first).")
+
+
+rules_app = typer.Typer(help="Manage architecture rules.")
+app.add_typer(rules_app, name="rules")
+
+
+@rules_app.command("list")
+def rules_list(
+    path: str = typer.Argument(".", help="Project path"),
+):
+    """List all active rules for the current stack."""
+    project_path = str(Path(path).resolve())
+    config = load_config(project_path)
+    rules = load_rules(project_path, config.stack)
+
+    console.print(f"\n[bold]Rules for {config.stack}[/bold]\n")
+    for section_key, section in rules.items():
+        if not isinstance(section, dict):
+            continue
+        for sub_key, sub_val in section.items():
+            if not isinstance(sub_val, dict):
+                continue
+            for check_key in ["forbidden", "checks"]:
+                for rule in sub_val.get(check_key, []):
+                    rid = rule.get("id", "?")
+                    sev = rule.get("severity", "?")
+                    msg = rule.get("message", "?")
+                    disabled = rid in config.ignore_rules
+                    status = "[dim]DISABLED[/dim]" if disabled else f"[{{'critical':'red','high':'yellow','medium':'blue','low':'dim'}.get(sev, 'white')}]{sev.upper()}[/]"
+                    console.print(f"  {rid:10s} {status:20s} {msg}")
+
+
+@rules_app.command("add")
+def rules_add(
+    path: str = typer.Argument(".", help="Project path"),
+    name: str = typer.Option(..., "--name", "-n", help="Rule name"),
+    pattern: str = typer.Option(..., "--pattern", "-p", help="Regex pattern to match"),
+    message: str = typer.Option(..., "--message", "-m", help="Message when pattern is found"),
+    sev: str = typer.Option("medium", "--severity", "-s", help="Severity: critical, high, medium, low"),
+):
+    """Add a custom rule."""
+    import yaml
+    project_path = str(Path(path).resolve())
+    crystal_dir = get_crystal_dir(project_path)
+    rules_path = crystal_dir / "rules.yaml"
+
+    custom = {}
+    if rules_path.exists():
+        with open(rules_path) as f:
+            custom = yaml.safe_load(f) or {}
+
+    if "custom_rules" not in custom:
+        custom["custom_rules"] = []
+
+    rid = f"custom-{len(custom['custom_rules']) + 1:03d}"
+    custom["custom_rules"].append({
+        "id": rid, "name": name, "pattern": pattern,
+        "message": message, "severity": sev,
+    })
+
+    with open(rules_path, "w") as f:
+        yaml.dump(custom, f, default_flow_style=False)
+
+    console.print(f"[green]Added rule {rid}: {name}[/green]")
+
+
+@rules_app.command("remove")
+def rules_remove(
+    path: str = typer.Argument(".", help="Project path"),
+    rule_id: str = typer.Option(..., "--id", "-i", help="Rule ID to disable"),
+):
+    """Disable a rule by ID."""
+    project_path = str(Path(path).resolve())
+    config = load_config(project_path)
+    if rule_id not in config.ignore_rules:
+        config.ignore_rules.append(rule_id)
+        save_config(config, project_path)
+    console.print(f"[green]Disabled rule {rule_id}[/green]")
+
+
+@app.command()
+def fix(
+    path: str = typer.Argument(".", help="Project path"),
+    dry_run: bool = typer.Option(True, "--dry-run/--apply", help="Show what would change without changing it"),
+):
+    """Auto-fix simple issues (LOW/MEDIUM only).
+
+    Only fixes safe, high-confidence issues like adding .env to .gitignore
+    or creating missing directories. Never touches CRITICAL or HIGH.
+    """
+    project_path = str(Path(path).resolve())
+    root = Path(project_path)
+    config = load_config(project_path)
+    rules = load_rules(project_path, config.stack)
+    issues = run_all_analyzers(project_path, rules, config)
+
+    fixable = [i for i in issues if i.severity in ("low", "medium")]
+    if not fixable:
+        console.print("[green]No auto-fixable issues found.[/green]")
+        return
+
+    fixed = 0
+    for issue in fixable:
+        if issue.rule_id == "arch-006" and ".env" not in (root / ".gitignore").read_text() if (root / ".gitignore").exists() else True:
+            if dry_run:
+                console.print(f"  [dim]WOULD FIX[/dim] {issue.rule_id}: Add .env to .gitignore")
+            else:
+                with open(root / ".gitignore", "a") as f:
+                    f.write("\n.env\n")
+                console.print(f"  [green]FIXED[/green] {issue.rule_id}: Added .env to .gitignore")
+            fixed += 1
+        elif issue.rule_id == "arch-001":
+            dir_path = root / issue.file
+            if dry_run:
+                console.print(f"  [dim]WOULD FIX[/dim] {issue.rule_id}: Create directory {issue.file}")
+            else:
+                dir_path.mkdir(parents=True, exist_ok=True)
+                console.print(f"  [green]FIXED[/green] {issue.rule_id}: Created {issue.file}")
+            fixed += 1
+
+    mode = "Would fix" if dry_run else "Fixed"
+    console.print(f"\n{mode} {fixed} issues. {len(fixable) - fixed} require manual attention.")
+    if dry_run and fixed > 0:
+        console.print("[dim]Run with --apply to make changes.[/dim]")
+
+
+@app.command()
+def diff(
+    path: str = typer.Argument(".", help="Project path"),
+):
+    """Check only files changed since last git commit."""
+    import subprocess
+    project_path = str(Path(path).resolve())
+    config = load_config(project_path)
+    rules = load_rules(project_path, config.stack)
+
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--name-only", "HEAD"],
+            capture_output=True, text=True, cwd=project_path, timeout=10
+        )
+        staged = subprocess.run(
+            ["git", "diff", "--cached", "--name-only"],
+            capture_output=True, text=True, cwd=project_path, timeout=10
+        )
+        changed = set(result.stdout.strip().split("\n") + staged.stdout.strip().split("\n"))
+        changed = {f for f in changed if f.strip()}
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        console.print("[red]Not a git repo or git not available.[/red]")
+        raise typer.Exit(1)
+
+    if not changed:
+        console.print("[green]No changed files to check.[/green]")
+        return
+
+    console.print(f"[dim]Checking {len(changed)} changed files...[/dim]\n")
+    all_issues = run_all_analyzers(project_path, rules, config)
+
+    # Filter to only changed files
+    diff_issues = [i for i in all_issues if i.file in changed or any(i.file.endswith(f) for f in changed)]
+
+    if not diff_issues:
+        console.print("[green]No issues in changed files.[/green]")
+        return
+
+    health = calculate_health(diff_issues)
+    print_health(health, console)
+    print_issues(diff_issues, console)
+
+
+@app.command()
+def audit(
+    path: str = typer.Argument(".", help="Project path"),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Write audit to file"),
+):
+    """Run comprehensive AI-powered project audit.
+
+    Correlates issues across analyzers, identifies hotspots,
+    and generates actionable recommendations.
+    """
+    from crystal_guard.agent import CrystalAgent
+
+    project_path = str(Path(path).resolve())
+    agent = CrystalAgent(project_path)
+
+    console.print("[dim]Running comprehensive audit...[/dim]\n")
+    report = agent.audit()
+
+    if output:
+        Path(output).write_text(report)
+        console.print(f"[green]Audit report saved to {output}[/green]")
+    else:
+        console.print(report)
+
+
+@app.command()
+def completeness(
+    path: str = typer.Argument(".", help="Project path"),
+):
+    """Compare PRD with actual implementation."""
+    from crystal_guard.agent import CrystalAgent
+
+    project_path = str(Path(path).resolve())
+    agent = CrystalAgent(project_path)
+    console.print(agent.completeness())
 
 
 if __name__ == "__main__":

@@ -1,4 +1,6 @@
-"""Pipeline — Stage-aware checking (local → staging → production).
+"""Pipeline — Stage-aware checking (local -> staging -> production)."""
+
+from __future__ import annotations
 
 Different strictness at each stage:
 - LOCAL: lenient, you're still building
